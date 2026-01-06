@@ -60,47 +60,36 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white pt-12 pb-6" id="contact">
+    <footer class="bg-gray-800 text-white pt-12 pb-12" id="contact">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div class="flex flex-col md:flex-row justify-center gap-12 text-center md:text-left">
                 <!-- Company Info -->
-                <div>
-                    <h3 class="text-lg font-bold mb-4">PT Mutiara Jaya Express</h3>
-                    <p class="text-gray-400 mb-4">Jasa pengiriman barang terpercaya sejak 2003. Melayani distribusi ke seluruh kota besar di Pulau Jawa.</p>
+                <div class="md:w-1/3">
+                    <h3 class="text-xl font-bold mb-4">PT Mutiara Jaya Express</h3>
+                    <p class="text-gray-400 leading-relaxed">Jasa pengiriman barang terpercaya sejak 2003. Melayani distribusi ke seluruh kota besar di Pulau Jawa dengan armada lengkap dan profesional.</p>
                 </div>
 
                 <!-- Contact Info -->
-                <div>
-                    <h3 class="text-lg font-bold mb-4">Hubungi Kami</h3>
-                    <ul class="text-gray-400 space-y-2">
-                        <li class="flex items-start gap-2">
-                            <svg class="w-5 h-5 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            <span>Ruko Jelambar Center</span>
+                <div class="md:w-1/3">
+                    <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                    <ul class="text-gray-400 space-y-3 inline-block text-left">
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 mt-0.5 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <span>Ruko Jelambar Center, Blok E41<br>Jl. P. TB. Angke No. 10<br>Jelambar Baru, Jakarta Barat</span>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                            <span>+62821 1146 4350, +62852 1211 7630</span>
+                        <li class="flex items-center gap-3">
+                            <svg class="w-6 h-6 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            <span>+62821 1146 4350<br>+62852 1211 7630</span>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                            <span>ekspedisi_mutiara@yahoo.com</span>
+                        <li class="flex items-center gap-3">
+                            <svg class="w-6 h-6 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span class="uppercase">EKSPEDISI_MUTIARA@YAHOO.COM</span>
                         </li>
                     </ul>
                 </div>
-
-                <!-- Socials & Links -->
-                <div>
-                    <h3 class="text-lg font-bold mb-4">Tautan</h3>
-                    <div class="flex gap-4 mb-4">
-                        <!-- Social placeholders -->
-                        <a href="#" class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-blue-600 transition">F</a>
-                        <a href="#" class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-blue-400 transition">T</a>
-                        <a href="#" class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-pink-600 transition">I</a>
-                    </div>
-                </div>
             </div>
             
-            <div class="border-t border-gray-700 pt-6 text-center text-gray-500 text-sm">
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-500 text-sm">
                 &copy; {{ date('Y') }} PT Mutiara Jaya Express. All rights reserved.
             </div>
         </div>

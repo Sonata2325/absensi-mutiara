@@ -30,7 +30,7 @@
                     <div class="mt-4 font-bold text-gray-900">Alamat Kantor</div>
                     <div class="mt-2 text-gray-700">
                         Ruko Jelambar Center, Blok E41<br>
-                        Jl P. TB. Angke No 10<br>
+                        Jl. P. TB. Angke No. 10<br>
                         Jelambar Baru, Jakarta Barat
                     </div>
                     <div class="mt-3">
@@ -60,7 +60,7 @@
                     </div>
                     <div class="mt-4 font-bold text-gray-900">Email</div>
                     <div class="mt-2 text-gray-700">
-                        <a href="mailto:ekspedisi_mutiara@yahoo.com" class="hover:underline">ekspedisi_mutiara@yahoo.com</a>
+                        <a href="mailto:EKSPEDISI_MUTIARA@YAHOO.COM" class="hover:underline uppercase">EKSPEDISI_MUTIARA@YAHOO.COM</a>
                     </div>
                     <div class="mt-2 text-sm text-gray-600">Response time: 1x24 jam</div>
                 </div>
