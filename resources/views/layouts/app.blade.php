@@ -26,25 +26,24 @@
 </head>
 <body class="font-sans antialiased text-gray-800 bg-gray-50 flex flex-col min-h-screen">
 
-    <!-- Header Navigation -->
-    <header class="bg-white shadow-md fixed w-full z-50 top-0">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <header id="siteHeader" class="fixed w-full z-50 top-0 {{ request()->routeIs('home') ? 'bg-transparent' : 'bg-white shadow-md' }} transition-all duration-300">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="{{ route('home') }}" class="text-xl font-bold text-blue-800 flex items-center gap-2">
-                    <!-- Placeholder Logo -->
-                    <div class="w-8 h-8 bg-blue-800 text-white flex items-center justify-center rounded">M</div>
+                <a href="{{ route('home') }}" class="text-xl font-bold {{ request()->routeIs('home') ? 'text-white' : 'text-blue-800' }} flex items-center gap-2">
+                    <img src="{{ asset('logopt mutiara.png') }}" alt="PT Mutiara Jaya Express" class="w-8 h-8 rounded">
                     PT Mutiara Jaya Express
                 </a>
             </div>
 
             <!-- Menu -->
-            <nav class="hidden md:flex gap-6">
-                <a href="{{ route('home') }}" class="hover:text-blue-600 font-medium {{ request()->routeIs('home') ? 'text-blue-600' : 'text-gray-600' }}">Beranda</a>
-                <a href="{{ route('services') }}" class="hover:text-blue-600 font-medium {{ request()->routeIs('services') ? 'text-blue-600' : 'text-gray-600' }}">Layanan</a>
-                <a href="{{ route('tracking') }}" class="hover:text-blue-600 font-medium {{ request()->routeIs('tracking') ? 'text-blue-600' : 'text-gray-600' }}">Lacak Paket</a>
-                <a href="{{ route('order') }}" class="hover:text-blue-600 font-medium {{ request()->routeIs('order') ? 'text-blue-600' : 'text-gray-600' }}">Pesan Sekarang</a>
-                <a href="{{ route('contact') }}" class="hover:text-blue-600 font-medium {{ request()->routeIs('contact') ? 'text-blue-600' : 'text-gray-600' }}">Kontak</a>
+            <nav class="hidden md:flex gap-6 {{ request()->routeIs('home') ? 'text-white' : '' }}">
+                <a href="{{ route('home') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Beranda</a>
+                <a href="{{ route('services') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Layanan</a>
+                <a href="{{ route('tracking') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Lacak Paket</a>
+                <a href="{{ route('order') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Pesan Sekarang</a>
+                <a href="{{ route('contact') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Kontak</a>
+                <span class="hidden lg:inline-block {{ request()->routeIs('home') ? 'text-white/70' : 'text-gray-500' }}">ENG / IND</span>
             </nav>
             
             <!-- Mobile Menu Button (Hamburger) - Implementation skipped for brevity but placeholder here -->
@@ -55,7 +54,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow pt-16">
+    <main class="flex-grow {{ request()->routeIs('home') ? 'pt-0' : 'pt-16' }}">
         @yield('content')
     </main>
 
@@ -94,6 +93,25 @@
             </div>
         </div>
     </footer>
+
+    @if (request()->routeIs('home'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var h = document.getElementById('siteHeader');
+            function onScroll(){
+                var y = window.scrollY || document.documentElement.scrollTop;
+                var scrolled = y > 5;
+                h.classList.toggle('bg-transparent', !scrolled);
+                h.classList.toggle('bg-black/30', scrolled);
+                h.classList.toggle('backdrop-blur-sm', scrolled);
+                h.classList.toggle('shadow', scrolled);
+                h.classList.toggle('rounded-b-lg', scrolled);
+            }
+            onScroll();
+            window.addEventListener('scroll', onScroll, {passive:true});
+        });
+    </script>
+    @endif
 
 </body>
 </html>
