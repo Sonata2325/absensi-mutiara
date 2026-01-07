@@ -24,40 +24,201 @@
             </div>
 
             @if(request('resi'))
-                <div class="bg-white rounded-xl shadow-lg border border-blue-100 p-6 animate-fade-in-up">
-                    <div class="flex items-center gap-4 mb-6 border-b pb-4">
-                        <div class="bg-blue-100 p-3 rounded-full text-primary">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        </div>
-                        <div>
-                            <div class="text-sm text-gray-500">Nomor Resi</div>
-                            <div class="text-2xl font-bold text-gray-900">{{ request('resi') }}</div>
-                        </div>
+                @if(!$order)
+                    <div class="bg-white rounded-xl shadow-lg border border-red-100 p-6">
+                        <div class="font-bold text-gray-900">Resi tidak ditemukan</div>
+                        <div class="text-gray-600 mt-2">Pastikan nomor resi benar atau coba lagi beberapa saat.</div>
                     </div>
+                @else
+                    @php
+                        $status = (string) $order->status;
+                        $truckPlate = $order->truck?->plat_nomor;
+                        $badge = match ($status) {
+                            'menunggu_konfirmasi' => ['Menunggu Konfirmasi', 'bg-yellow-100 text-yellow-800 border-yellow-200'],
+                            'menunggu_drop_barang' => ['Menunggu Drop Barang', 'bg-yellow-100 text-yellow-800 border-yellow-200'],
+                            'dikonfirmasi_menunggu_pickup' => ['Dikonfirmasi - Menunggu Pickup', 'bg-blue-100 text-blue-800 border-blue-200'],
+                            'dimuat_di_truck' => ['Barang Dimuat di Truck ' . ($truckPlate ?: '-'), 'bg-blue-100 text-blue-800 border-blue-200'],
+                            'dalam_perjalanan' => ['Dalam Perjalanan - Truck ' . ($truckPlate ?: '-'), 'bg-emerald-100 text-emerald-800 border-emerald-200'],
+                            'tiba_di_tujuan' => ['Tiba di Tujuan', 'bg-emerald-100 text-emerald-800 border-emerald-200'],
+                            'selesai' => ['Selesai', 'bg-slate-200 text-slate-800 border-slate-300'],
+                            'dibatalkan' => ['Dibatalkan', 'bg-red-100 text-red-800 border-red-200'],
+                            default => ['Diproses', 'bg-slate-100 text-slate-800 border-slate-200'],
+                        };
+                    @endphp
 
-                    <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
-                        <!-- Mockup Status Timeline -->
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-300 group-[.is-active]:bg-emerald-500 text-slate-500 group-[.is-active]:text-emerald-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                                <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="12" height="10">
-                                    <path fill-rule="nonzero" d="M10.422 1.257 4.655 7.025 2.553 4.923A.916.916 0 0 0 1.257 6.22l2.75 2.75a.916.916 0 0 0 1.296 0l6.415-6.416a.916.916 0 0 0-1.296-1.296Z" />
-                                </svg>
+                    <div class="bg-white rounded-xl shadow-lg border border-blue-100 p-6 animate-fade-in-up">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-5">
+                            <div>
+                                <div class="text-sm text-gray-500">Nomor Resi</div>
+                                <div class="text-2xl font-extrabold text-gray-900 tracking-wider">{{ $order->nomor_resi }}</div>
                             </div>
-                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-4 rounded border border-slate-200 shadow">
-                                <div class="flex items-center justify-between space-x-2 mb-1">
-                                    <div class="font-bold text-slate-900">Pesanan Dibuat</div>
-                                    <time class="font-caveat font-medium text-indigo-500">Baru saja</time>
-                                </div>
-                                <div class="text-slate-500">Data pesanan telah diterima di sistem kami.</div>
+                            <div class="inline-flex items-center px-3 py-1.5 rounded-full border font-semibold {{ $badge[1] }}">
+                                {{ $badge[0] }}
                             </div>
                         </div>
-                        
-                        <!-- Note: This is a static mockup. In a real app, you'd loop through actual tracking history. -->
-                        <div class="text-center text-sm text-gray-500 mt-4">
-                            Status tracking real-time akan tersedia saat sistem terintegrasi penuh.
+
+                        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-gray-50 border rounded-2xl p-6">
+                                <div class="font-bold text-gray-900 mb-4">Detail Pesanan</div>
+                                <div class="space-y-3 text-gray-800">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Tanggal Order</div>
+                                        <div class="font-semibold text-right">{{ $order->tanggal_order?->format('d M Y, H:i') ?? '-' }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Jenis Layanan</div>
+                                        <div class="font-semibold text-right">{{ strtoupper((string) $order->jenis_layanan) }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Armada Diminta</div>
+                                        <div class="font-semibold text-right">{{ $order->jenis_armada_diminta ?: '-' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 border rounded-2xl p-6">
+                                <div class="font-bold text-gray-900 mb-4">Informasi Barang</div>
+                                <div class="space-y-3 text-gray-800">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Deskripsi</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->deskripsi_barang }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Berat</div>
+                                        <div class="font-semibold text-right">{{ rtrim(rtrim((string) $order->berat_kg, '0'), '.') }} kg</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Catatan</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->catatan_barang ?: '-' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white border rounded-2xl p-6">
+                                <div class="font-bold text-gray-900 mb-4">Informasi Pengirim</div>
+                                <div class="space-y-2 text-gray-800">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Nama/Perusahaan</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->pengirim_nama ?: '-' }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Kontak</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->pengirim_kontak_person ?: '-' }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Telepon</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->pengirim_telepon ?: '-' }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Email</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->pengirim_email ?: '-' }}</div>
+                                    </div>
+                                    @if($order->jenis_layanan === 'b2b')
+                                        <div class="flex items-start justify-between gap-4">
+                                            <div class="text-gray-500">Alamat Pickup</div>
+                                            <div class="font-semibold text-right max-w-xs whitespace-pre-line">{{ $order->pengirim_alamat_pickup ?: '-' }}</div>
+                                        </div>
+                                    @else
+                                        <div class="flex items-start justify-between gap-4">
+                                            <div class="text-gray-500">Kantor Drop</div>
+                                            <div class="font-semibold text-right max-w-xs">{{ $order->pengirim_office_id ?: '-' }}</div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="bg-white border rounded-2xl p-6">
+                                <div class="font-bold text-gray-900 mb-4">Informasi Penerima</div>
+                                <div class="space-y-2 text-gray-800">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Nama</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->penerima_nama }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Telepon</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->penerima_telepon }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Alamat Tujuan</div>
+                                        <div class="font-semibold text-right max-w-xs whitespace-pre-line">{{ $order->penerima_alamat }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Catatan</div>
+                                        <div class="font-semibold text-right max-w-xs">{{ $order->penerima_catatan ?: '-' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-gray-50 border rounded-2xl p-6">
+                                <div class="font-bold text-gray-900 mb-4">Informasi Pengiriman</div>
+                                <div class="space-y-3 text-gray-800">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Driver</div>
+                                        <div class="font-semibold text-right">{{ $order->driver?->nama ?: '-' }}</div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Truck</div>
+                                        <div class="font-semibold text-right">
+                                            @if($order->truck)
+                                                {{ $order->truck->plat_nomor }} - {{ $order->truck->jenis_armada }}
+                                            @else
+                                                -
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="text-gray-500">Kontak Driver</div>
+                                        <div class="font-semibold text-right">
+                                            @if($order->driver?->telepon)
+                                                <a class="text-primary hover:underline" href="tel:{{ preg_replace('/\s+/', '', $order->driver->telepon) }}">{{ $order->driver->telepon }}</a>
+                                            @else
+                                                -
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @if($otherOrdersCount !== null)
+                                        <div class="flex items-start justify-between gap-4">
+                                            <div class="text-gray-500">Pesanan di Truck</div>
+                                            <div class="font-semibold text-right">
+                                                Truck ini membawa {{ $otherOrdersCount + 1 }} pesanan termasuk Anda
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="bg-white border rounded-2xl p-6">
+                                <div class="font-bold text-gray-900 mb-4">Timeline Status</div>
+                                @if($history->isEmpty())
+                                    <div class="text-gray-600">Belum ada riwayat status.</div>
+                                @else
+                                    <div class="space-y-3">
+                                        @foreach($history as $item)
+                                            <details class="border rounded-xl p-4 bg-gray-50">
+                                                <summary class="cursor-pointer flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                                                    <div class="font-semibold text-gray-900">{{ str_replace('_', ' ', $item->status_baru) }}</div>
+                                                    <div class="text-sm text-gray-600">{{ $item->created_at?->format('d M Y, H:i') }}</div>
+                                                </summary>
+                                                <div class="mt-3 text-gray-700 space-y-2">
+                                                    @if($item->admin_nama)
+                                                        <div>Admin: <span class="font-semibold">{{ $item->admin_nama }}</span></div>
+                                                    @endif
+                                                    @if($item->keterangan)
+                                                        <div class="whitespace-pre-line">{{ $item->keterangan }}</div>
+                                                    @endif
+                                                </div>
+                                            </details>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @endif
         </div>
     </div>

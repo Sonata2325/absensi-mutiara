@@ -44,18 +44,18 @@
                                 <div class="mt-4 grid grid-cols-1 gap-3 text-gray-800">
                                     <div class="flex items-start justify-between gap-4">
                                         <div class="text-gray-500">Tanggal order</div>
-                                        <div class="font-semibold text-right">{{ data_get($order, 'order_date', now()->toDateTimeString()) }}</div>
+                                        <div class="font-semibold text-right">{{ $order->tanggal_order?->format('Y-m-d H:i') ?? now()->format('Y-m-d H:i') }}</div>
                                     </div>
                                     <div class="flex items-start justify-between gap-4">
                                         <div class="text-gray-500">Jenis layanan</div>
-                                        <div class="font-semibold text-right">{{ strtoupper((string) data_get($order, 'service_type', '-')) }}</div>
+                                        <div class="font-semibold text-right">{{ strtoupper((string) $order->jenis_layanan) }}</div>
                                     </div>
                                     <div class="flex items-start justify-between gap-4">
                                         <div class="text-gray-500">Alamat pengirim → penerima</div>
                                         <div class="font-semibold text-right max-w-xs">
-                                            {{ (string) data_get($order, 'sender.pickup_address', data_get($order, 'sender.office_id', '-')) }}
+                                            {{ $order->jenis_layanan === 'b2b' ? (string) ($order->pengirim_alamat_pickup ?: '-') : (string) ($order->pengirim_office_id ?: '-') }}
                                             →
-                                            {{ (string) data_get($order, 'receiver.address', '-') }}
+                                            {{ (string) ($order->penerima_alamat ?: '-') }}
                                         </div>
                                     </div>
                                     <div class="flex items-start justify-between gap-4">
@@ -68,7 +68,7 @@
                             <div class="border-t pt-6">
                                 <div class="font-bold text-gray-900">Informasi Selanjutnya</div>
 
-                                @if (data_get($order, 'service_type') === 'b2c')
+                                @if ($order->jenis_layanan === 'b2c')
                                     <div class="mt-4 space-y-2 text-gray-700">
                                         <div>Silakan drop barang Anda ke kantor MJE:</div>
                                         @if ($office)
@@ -89,7 +89,7 @@
                                 @else
                                     <div class="mt-4 space-y-2 text-gray-700">
                                         <div>Admin kami akan menghubungi Anda dalam 1x24 jam untuk konfirmasi ketersediaan driver dan jadwal pickup</div>
-                                        <div>Anda akan menerima email konfirmasi di: <span class="font-semibold">{{ (string) data_get($order, 'sender.email', '-') }}</span></div>
+                                        <div>Anda akan menerima email konfirmasi di: <span class="font-semibold">{{ (string) ($order->pengirim_email ?: '-') }}</span></div>
                                         <div>Tempelkan QR Code pada barang sebelum pickup</div>
                                     </div>
                                 @endif
@@ -110,17 +110,18 @@
     <script>
         (function () {
             const resi = @json($resi);
+            const qrPayload = @json($qrPayload ?? '');
             const qrImage = document.getElementById('qrImage');
             const copyResiBtn = document.getElementById('copyResiBtn');
             const downloadQrBtn = document.getElementById('downloadQrBtn');
 
-            function qrUrlFor(text) {
-                const payload = JSON.stringify({ resi: text, source: 'MJE Order' });
-                return `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(payload)}`;
+            function qrUrlFor(payload, size) {
+                const qrSize = size || 320;
+                return `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(payload || '')}`;
             }
 
             if (resi) {
-                qrImage.src = qrUrlFor(resi);
+                qrImage.src = qrUrlFor(qrPayload || '');
             }
 
             copyResiBtn.addEventListener('click', async () => {
@@ -137,7 +138,7 @@
             });
 
             downloadQrBtn.addEventListener('click', async () => {
-                const url = qrUrlFor(resi || '');
+                const url = qrUrlFor(qrPayload || '', 1024);
                 const response = await fetch(url);
                 const blob = await response.blob();
                 const objectUrl = URL.createObjectURL(blob);
@@ -152,4 +153,3 @@
         })();
     </script>
 @endsection
-
