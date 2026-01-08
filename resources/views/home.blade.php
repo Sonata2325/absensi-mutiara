@@ -35,9 +35,6 @@
                                 </div>
                                 <div class="md:w-1/2 p-8 md:p-12">
                                     <div class="flex items-center gap-3 mb-4">
-                                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        </div>
                                         <h3 class="text-2xl font-bold text-gray-900">Colt Diesel Double</h3>
                                     </div>
                                     <p class="text-gray-600 text-lg mb-6">Pilihan armada lincah untuk pengiriman cepat.</p>
@@ -55,9 +52,6 @@
                                 </div>
                                 <div class="md:w-1/2 p-8 md:p-12">
                                     <div class="flex items-center gap-3 mb-4">
-                                        <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                        </div>
                                         <h3 class="text-2xl font-bold text-gray-900">Fuso</h3>
                                     </div>
                                     <p class="text-gray-600 text-lg mb-6">Solusi efisien untuk muatan berat dan volume besar.</p>
@@ -75,9 +69,6 @@
                                 </div>
                                 <div class="md:w-1/2 p-8 md:p-12">
                                     <div class="flex items-center gap-3 mb-4">
-                                        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                                        </div>
                                         <h3 class="text-2xl font-bold text-gray-900">Tronton</h3>
                                     </div>
                                     <p class="text-gray-600 text-lg mb-6">Kapasitas angkut maksimal untuk kebutuhan industri.</p>
@@ -148,9 +139,6 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                 <div class="bg-white p-8 rounded-2xl h-full shadow-lg border-t-4 border-primary">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-12 h-12 bg-primary text-white rounded-lg flex items-center justify-center font-bold text-xl shadow-md">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        </div>
                         <h3 class="text-2xl font-bold text-gray-900">VISI</h3>
                     </div>
                     <p class="text-gray-700 text-lg leading-relaxed">Menjadi perusahaan logistik yang dapat dipercaya, diandalkan dan terkemuka di Indonesia</p>
@@ -158,9 +146,6 @@
                 
                 <div class="bg-white p-8 rounded-2xl h-full shadow-lg border-t-4 border-primary">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-12 h-12 bg-primary text-white rounded-lg flex items-center justify-center font-bold text-xl shadow-md">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                        </div>
                         <h3 class="text-2xl font-bold text-gray-900">MISI</h3>
                     </div>
                     <ul class="space-y-4 text-gray-700 text-lg">
@@ -189,7 +174,7 @@
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-3xl font-bold text-gray-800 uppercase">OUR CLIENTS</h2>
-            <div class="mt-2 text-sm text-black">Dipercayai oleh</div>
+            <div class="mt-2 text-lg text-black font-medium">Dipercayai oleh</div>
             <div class="mt-8"></div>
             <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
                 <div class="text-lg font-semibold text-gray-600 border px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition bg-gray-50">PT. Putra Dumas Lestari</div>
@@ -203,19 +188,6 @@
         </div>
     </section>
 
-    <section class="py-20 bg-gray-900">
-        <div class="container mx-auto px-4">
-            <div class="rounded-2xl bg-gradient-to-r from-blue-700 to-purple-700 p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8">
-                <div>
-                    <h3 class="text-2xl md:text-3xl font-bold">Butuh solusi distribusi yang andal?</h3>
-                    <p class="mt-2 text-blue-100">Diskusikan kebutuhan Anda dan kami siapkan rencana pengiriman terbaik.</p>
-                </div>
-                <div class="flex gap-3">
-                    <a href="{{ route('services') }}" class="px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-blue-50">Lihat Layanan</a>
-                    <a href="{{ route('contact') }}" class="px-6 py-3 bg-black/20 border border-white/30 text-white font-semibold rounded-lg hover:bg-black/30">Hubungi Kami</a>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
 @endsection

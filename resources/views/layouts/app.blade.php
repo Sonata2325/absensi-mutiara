@@ -27,7 +27,7 @@
 <body class="font-sans antialiased text-gray-800 bg-gray-50 flex flex-col min-h-screen">
 
     <header id="siteHeader" class="fixed w-full z-50 top-0 {{ request()->routeIs('home') ? 'bg-transparent' : 'bg-white shadow-md' }} transition-all duration-300">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="w-full mx-auto px-6 md:px-12 py-4 flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="text-xl font-bold {{ request()->routeIs('home') ? 'text-white' : 'text-blue-800' }} flex items-center gap-2">
@@ -37,13 +37,20 @@
             </div>
 
             <!-- Menu -->
-            <nav class="hidden md:flex gap-6 {{ request()->routeIs('home') ? 'text-white' : '' }}">
-                <a href="{{ route('home') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Beranda</a>
-                <a href="{{ route('services') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Layanan</a>
-                <a href="{{ route('tracking') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Lacak Paket</a>
-                <a href="{{ route('order') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Pesan Sekarang</a>
-                <a href="{{ route('contact') }}" class="font-medium text-lg {{ request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-blue-600' }}">Kontak</a>
-                <span class="hidden lg:inline-block {{ request()->routeIs('home') ? 'text-white/70' : 'text-gray-500' }}">ENG / IND</span>
+            <nav class="hidden md:flex gap-8">
+                @foreach([
+                    ['route' => 'home', 'label' => 'Beranda'],
+                    ['route' => 'services', 'label' => 'Layanan'],
+                    ['route' => 'tracking', 'label' => 'Lacak Paket'],
+                    ['route' => 'order', 'label' => 'Pesan Sekarang'],
+                    ['route' => 'contact', 'label' => 'Kontak']
+                ] as $item)
+                <a href="{{ route($item['route']) }}" class="group relative font-medium text-lg py-2 {{ request()->routeIs($item['route']) ? (request()->routeIs('home') ? 'text-white' : 'text-gray-800') : (request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-gray-800') }}">
+                    {{ $item['label'] }}
+                    <span class="absolute bottom-0 left-0 h-[3px] transition-all duration-300 {{ request()->routeIs('home') ? 'bg-white' : 'bg-gray-800' }} {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                </a>
+                @endforeach
+                <span class="hidden lg:inline-block py-2 {{ request()->routeIs('home') ? 'text-white/70' : 'text-gray-500' }}">ENG / IND</span>
             </nav>
             
             <!-- Mobile Menu Button (Hamburger) - Implementation skipped for brevity but placeholder here -->
