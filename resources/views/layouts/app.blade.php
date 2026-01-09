@@ -24,7 +24,7 @@
         }
     </script>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 flex flex-col min-h-screen">
+<body class="font-sans antialiased text-gray-800 bg-gray-50 flex flex-col min-h-screen overflow-x-hidden">
 
     <header id="siteHeader" class="fixed w-full z-50 top-0 {{ request()->routeIs('home') ? 'bg-transparent' : 'bg-white shadow-md' }} transition-all duration-300">
         <div class="w-full mx-auto px-6 md:px-12 py-4 flex justify-between items-center">
@@ -50,13 +50,29 @@
                     <span class="absolute bottom-0 left-0 h-[3px] transition-all duration-300 {{ request()->routeIs('home') ? 'bg-white' : 'bg-gray-800' }} {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                 </a>
                 @endforeach
-                <span class="hidden lg:inline-block py-2 {{ request()->routeIs('home') ? 'text-white/70' : 'text-gray-500' }}">ENG / IND</span>
             </nav>
             
-            <!-- Mobile Menu Button (Hamburger) - Implementation skipped for brevity but placeholder here -->
-            <button class="md:hidden text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <!-- Mobile Menu Button (Hamburger) -->
+            <button id="mobileMenuBtn" class="md:hidden text-gray-600 focus:outline-none">
+                <svg class="w-8 h-8 {{ request()->routeIs('home') ? 'text-white' : 'text-gray-800' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
             </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileMenu" class="hidden absolute top-full left-0 w-full bg-white shadow-lg md:hidden flex flex-col py-4 px-6 gap-4 border-t border-gray-100 transition-all duration-300">
+            @foreach([
+                ['route' => 'home', 'label' => 'Beranda'],
+                ['route' => 'services', 'label' => 'Layanan'],
+                ['route' => 'tracking', 'label' => 'Lacak Paket'],
+                ['route' => 'order', 'label' => 'Pesan Sekarang'],
+                ['route' => 'contact', 'label' => 'Kontak']
+            ] as $item)
+            <a href="{{ route($item['route']) }}" class="text-lg font-medium py-2 border-b border-gray-50 {{ request()->routeIs($item['route']) ? 'text-blue-700' : 'text-gray-700 hover:text-blue-600' }}">
+                {{ $item['label'] }}
+            </a>
+            @endforeach
         </div>
     </header>
 
@@ -100,6 +116,21 @@
             </div>
         </div>
     </footer>
+
+    <!-- Global Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const btn = document.getElementById('mobileMenuBtn');
+            const menu = document.getElementById('mobileMenu');
+            
+            if(btn && menu) {
+                btn.addEventListener('click', function() {
+                    menu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 
     @if (request()->routeIs('home'))
     <script>

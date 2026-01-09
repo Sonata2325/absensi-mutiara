@@ -162,19 +162,4 @@
             </div>
         </div>
     </section>
-
-    <section class="py-16 bg-gray-900 text-white">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-bold">Siap Mengirim Barang?</h2>
-                    <p class="mt-2 text-gray-300">Hubungi tim kami untuk jadwal pickup, ketersediaan armada, dan estimasi biaya.</p>
-                </div>
-                <div class="flex gap-3">
-                    <a href="{{ route('order') }}" class="px-6 py-3 bg-primary hover:bg-blue-800 text-white font-bold rounded-lg transition">Pesan Sekarang</a>
-                    <a href="{{ route('home') }}#tracking" class="px-6 py-3 bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 font-bold rounded-lg transition">Lacak Paket</a>
-                </div>
-            </div>
-        </div>
-    </section>
 @endsection
