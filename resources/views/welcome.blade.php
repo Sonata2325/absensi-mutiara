@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <!-- Favicon: use the provided logopt mutiara image -->
+        <link rel="icon" href="{{ asset('logopt mutiara.png') }}" type="image/png">
+        <link rel="shortcut icon" href="{{ asset('logopt mutiara.png') }}" type="image/png">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

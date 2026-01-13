@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PT Mutiara Jaya Express</title>
+    <!-- Favicon: use the provided logopt mutiara image -->
+    <link rel="icon" href="{{ asset('logopt mutiara.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('logopt mutiara.png') }}" type="image/png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
