@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDriverController;
 use App\Http\Controllers\Admin\AdminGroupingController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminShipmentController;
+use App\Http\Controllers\Admin\AdminTruckController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +46,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/scan-grouping/depart', [AdminGroupingController::class, 'depart'])->name('grouping.depart');
 
     Route::get('/shipments/active', [AdminShipmentController::class, 'active'])->name('shipments.active');
+    Route::post('/shipments/{session}/arrive', [AdminShipmentController::class, 'arrive'])->name('shipments.arrive');
     Route::post('/shipments/{session}/finish', [AdminShipmentController::class, 'finish'])->name('shipments.finish');
     Route::get('/shipments/history', [AdminShipmentController::class, 'history'])->name('shipments.history');
+
+    // Master Data Routes
+    Route::resource('trucks', AdminTruckController::class);
+    Route::resource('drivers', AdminDriverController::class);
 });

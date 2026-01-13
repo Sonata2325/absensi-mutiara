@@ -17,29 +17,84 @@ class AdminShipmentController extends Controller
     public function active()
     {
         $sessions = ShipmentSession::query()
-            ->with(['truck', 'driver'])
-            ->where('status', 'dalam_perjalanan')
+            ->with(['truck', 'driver', 'orders' => function ($query) {
+                $query->orderBy('created_at');
+            }])
+            ->whereIn('status', ['dalam_perjalanan', 'tiba_di_tujuan'])
             ->orderByDesc('waktu_berangkat')
             ->get();
-
-        $sessions->each(function (ShipmentSession $session) {
-            $session->setRelation(
-                'orders',
-                Order::query()
-                    ->whereIn('id', (array) ($session->order_ids ?? []))
-                    ->orderBy('created_at')
-                    ->get()
-            );
-        });
 
         return view('admin.shipments.active', [
             'sessions' => $sessions,
         ]);
     }
 
+    public function arrive(Request $request, ShipmentSession $session)
+    {
+        if (!in_array($session->status, ['dalam_perjalanan', 'tiba_di_tujuan'])) {
+            return redirect()->back()->with('status', 'Status shipment tidak valid untuk update kedatangan.');
+        }
+
+        $validated = $request->validate([
+            'admin_nama' => ['nullable', 'string', 'max:255'],
+            'order_ids' => ['nullable', 'array'],
+            'order_ids.*' => ['integer', 'exists:orders,id'],
+            'catatan' => ['nullable', 'string'],
+        ]);
+
+        $selectedIds = array_values(array_unique(array_map('intval', $validated['order_ids'] ?? [])));
+        // If no specific orders selected, assume all active orders in session
+        if (count($selectedIds) === 0) {
+            $selectedIds = $session->orders()
+                ->where('status', 'dalam_perjalanan')
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $orders = Order::query()->whereIn('id', $selectedIds)->get();
+        if ($orders->isEmpty()) {
+            return redirect()->back()->with('status', 'Tidak ada pesanan yang dipilih.');
+        }
+
+        DB::transaction(function () use ($session, $orders, $validated) {
+            foreach ($orders as $order) {
+                if ($order->status === 'tiba_di_tujuan') {
+                    continue;
+                }
+
+                $prevStatus = $order->status;
+                $order->update(['status' => 'tiba_di_tujuan']);
+
+                $keterangan = 'Barang tiba di tujuan/hub.';
+                if (!empty($validated['catatan'])) {
+                    $keterangan .= "\n" . $validated['catatan'];
+                }
+
+                OrderHistory::create([
+                    'order_id' => $order->id,
+                    'status_sebelumnya' => $prevStatus,
+                    'status_baru' => 'tiba_di_tujuan',
+                    'keterangan' => $keterangan,
+                    'admin_nama' => $validated['admin_nama'] ?: null,
+                ]);
+            }
+
+            // Update session status if all orders have arrived or are finished
+            $notArrivedCount = $session->orders()
+                ->whereNotIn('status', ['tiba_di_tujuan', 'selesai', 'dibatalkan'])
+                ->count();
+
+            if ($notArrivedCount === 0) {
+                $session->update(['status' => 'tiba_di_tujuan']);
+            }
+        });
+
+        return redirect()->route('admin.shipments.active')->with('status', 'Status berhasil diperbarui menjadi Tiba di Tujuan.');
+    }
+
     public function finish(Request $request, ShipmentSession $session)
     {
-        if ($session->status !== 'dalam_perjalanan') {
+        if (!in_array($session->status, ['dalam_perjalanan', 'tiba_di_tujuan'])) {
             return redirect()->back()->with('status', 'Shipment ini tidak bisa diselesaikan.');
         }
 
@@ -51,7 +106,10 @@ class AdminShipmentController extends Controller
 
         $selectedIds = array_values(array_unique(array_map('intval', $validated['order_ids'] ?? [])));
         if (count($selectedIds) === 0) {
-            $selectedIds = array_map('intval', (array) ($session->order_ids ?? []));
+             $selectedIds = $session->orders()
+                ->whereIn('status', ['dalam_perjalanan', 'tiba_di_tujuan'])
+                ->pluck('id')
+                ->toArray();
         }
 
         $orders = Order::query()->whereIn('id', $selectedIds)->get();

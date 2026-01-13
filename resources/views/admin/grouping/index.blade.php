@@ -90,6 +90,7 @@
                                     @csrf
                                     <input type="hidden" name="truck_id" value="{{ optional($selectedTruck)->id }}">
                                     <input type="hidden" name="force" id="forceInput" value="0">
+                                    <input type="hidden" name="qr_raw" id="qrRawInput">
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Admin</label>
                                         <input name="admin_nama" id="adminNama" type="text" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Contoh: Budi Santoso">
@@ -235,6 +236,7 @@
         const adminNamaInput = document.getElementById('adminNama');
         const forceCheckbox = document.getElementById('forceCheckbox');
         const forceInput = document.getElementById('forceInput');
+        const qrRawInput = document.getElementById('qrRawInput');
 
         if (forceCheckbox && forceInput) {
             forceCheckbox.addEventListener('change', () => {
@@ -287,6 +289,7 @@
                     return;
                 }
                 await qrScanner.start(cameraId, config, (decodedText) => {
+                    if (qrRawInput) qrRawInput.value = decodedText;
                     const resi = parseResiFromPayload(decodedText || '');
                     if (resiInput) resiInput.value = resi;
                     if (addForm) addForm.submit();

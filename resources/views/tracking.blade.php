@@ -39,7 +39,7 @@
                             'dikonfirmasi_menunggu_pickup' => ['Dikonfirmasi - Menunggu Pickup', 'bg-blue-100 text-blue-800 border-blue-200'],
                             'dimuat_di_truck' => ['Barang Dimuat di Truck ' . ($truckPlate ?: '-'), 'bg-blue-100 text-blue-800 border-blue-200'],
                             'dalam_perjalanan' => ['Dalam Perjalanan - Truck ' . ($truckPlate ?: '-'), 'bg-emerald-100 text-emerald-800 border-emerald-200'],
-                            'tiba_di_tujuan' => ['Tiba di Tujuan', 'bg-emerald-100 text-emerald-800 border-emerald-200'],
+                            'tiba_di_tujuan' => ['Tiba di Tujuan', 'bg-blue-100 text-blue-800 border-blue-200'],
                             'selesai' => ['Selesai', 'bg-slate-200 text-slate-800 border-slate-300'],
                             'dibatalkan' => ['Dibatalkan', 'bg-red-100 text-red-800 border-red-200'],
                             default => ['Diproses', 'bg-slate-100 text-slate-800 border-slate-200'],

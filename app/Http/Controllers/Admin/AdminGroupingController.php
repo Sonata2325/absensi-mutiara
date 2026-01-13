@@ -103,6 +103,7 @@ class AdminGroupingController extends Controller
             'resi' => ['required', 'string'],
             'admin_nama' => ['nullable', 'string', 'max:255'],
             'force' => ['nullable', 'boolean'],
+            'qr_raw' => ['nullable', 'string'],
         ]);
 
         $truck = Truck::findOrFail($validated['truck_id']);
@@ -119,6 +120,16 @@ class AdminGroupingController extends Controller
         $order = Order::query()->where('nomor_resi', $validated['resi'])->first();
         if (! $order) {
             return redirect()->back()->with('status', 'Resi tidak ditemukan.');
+        }
+
+        // Validate QR Checksum if scanned
+        if (!empty($validated['qr_raw'])) {
+            $qrData = json_decode($validated['qr_raw'], true);
+            if ($qrData && isset($qrData['checksum'])) {
+                if ($order->qr_checksum && $order->qr_checksum !== $qrData['checksum']) {
+                    return redirect()->back()->with('status', 'Security Alert: Checksum QR Code tidak valid! Data mungkin telah dimodifikasi.');
+                }
+            }
         }
 
         if (in_array($order->status, ['dibatalkan', 'selesai'], true)) {

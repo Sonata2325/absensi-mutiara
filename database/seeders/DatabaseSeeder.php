@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            ['name' => 'Test User', 'password' => 'password']
+        );
 
         if (! Schema::hasTable('trucks') || ! Schema::hasTable('drivers')) {
             return;
@@ -44,15 +44,15 @@ class DatabaseSeeder extends Seeder
 
         $truck1 = Truck::firstOrCreate(
             ['plat_nomor' => 'B 1234 CD'],
-            ['jenis_armada' => 'Fuso', 'kapasitas_kg' => 2000, 'status' => 'tersedia']
+            ['jenis_armada' => 'fuso', 'kapasitas_kg' => 2000, 'status' => 'tersedia']
         );
         $truck2 = Truck::firstOrCreate(
             ['plat_nomor' => 'B 5678 EF'],
-            ['jenis_armada' => 'Tronton', 'kapasitas_kg' => 8000, 'status' => 'tersedia']
+            ['jenis_armada' => 'tronton_wingbox', 'kapasitas_kg' => 8000, 'status' => 'tersedia']
         );
         $truck3 = Truck::firstOrCreate(
             ['plat_nomor' => 'B 9012 GH'],
-            ['jenis_armada' => 'Colt Diesel Double', 'kapasitas_kg' => 1200, 'status' => 'maintenance']
+            ['jenis_armada' => 'cdd', 'kapasitas_kg' => 1200, 'status' => 'perbaikan']
         );
 
         $truck1->update(['driver_id_current' => $driver1->id]);

@@ -5,9 +5,9 @@
         <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=1920&auto=format&fit=crop" alt="Background" class="absolute inset-0 w-full h-full object-cover">
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
-            <h1 class="text-white font-bold leading-[1.05] tracking-tight">
+            <h1 class="text-white font-bold flex flex-col gap-2 md:gap-4 tracking-tight">
                 <span class="block text-4xl md:text-6xl">Menghubungkan</span>
-                <span class="block text-5xl md:text-7xl">Kebahagiaan</span>
+                <span class="block text-4xl md:text-6xl">Kebahagiaan</span>
                 <span class="block text-4xl md:text-6xl">dari Generasi ke Generasi</span>
             </h1>
             <p class="mt-6 text-white/80 text-base md:text-lg max-w-3xl mx-auto">

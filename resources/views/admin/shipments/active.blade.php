@@ -35,8 +35,8 @@
                                     <div class="text-lg font-bold text-gray-900">
                                         Truck {{ $session->truck?->plat_nomor }} - {{ $session->truck?->jenis_armada }}
                                     </div>
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full border text-xs font-bold bg-emerald-100 text-emerald-800 border-emerald-200">
-                                        Dalam Perjalanan
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full border text-xs font-bold {{ $session->status === 'tiba_di_tujuan' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200' }}">
+                                        {{ $session->status === 'tiba_di_tujuan' ? 'Tiba di Tujuan' : 'Dalam Perjalanan' }}
                                     </span>
                                 </div>
                                 <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-800">
@@ -66,14 +66,52 @@
                                                     <div class="font-bold text-gray-900">{{ $o->nomor_resi }}</div>
                                                     <div class="text-sm text-gray-600">{{ rtrim(rtrim((string) $o->berat_kg, '0'), '.') }} kg</div>
                                                 </div>
-                                                <div class="mt-1 text-sm text-gray-700">Tujuan: {{ $o->penerima_alamat }}</div>
+                                                <div class="mt-1 flex items-center gap-2">
+                                                    <span class="text-xs px-2 py-0.5 rounded {{ $o->status === 'tiba_di_tujuan' ? 'bg-blue-100 text-blue-800' : ($o->status === 'selesai' ? 'bg-gray-100 text-gray-800' : 'bg-emerald-100 text-emerald-800') }}">
+                                                        {{ str_replace('_', ' ', ucfirst($o->status)) }}
+                                                    </span>
+                                                    <span class="text-sm text-gray-700 truncate max-w-[200px]">{{ $o->penerima_alamat }}</span>
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="w-full lg:w-80">
+                            <div class="w-full lg:w-80 space-y-6">
+                                @if($session->status !== 'tiba_di_tujuan')
+                                <div class="bg-white border rounded-2xl p-5 shadow-sm">
+                                    <div class="font-bold text-gray-900">Update Kedatangan</div>
+                                    <form method="POST" action="{{ route('admin.shipments.arrive', $session) }}" class="mt-4 space-y-4">
+                                        @csrf
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Admin</label>
+                                            <input name="admin_nama" type="text" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1">Catatan</label>
+                                            <textarea name="catatan" rows="2" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                        </div>
+                                        <details class="border rounded-xl p-4 bg-gray-50">
+                                            <summary class="cursor-pointer font-semibold text-gray-900 text-sm">Pilih Barang (Opsional)</summary>
+                                            <div class="mt-3 space-y-2 max-h-40 overflow-y-auto">
+                                                @foreach($orders as $o)
+                                                    @if($o->status === 'dalam_perjalanan')
+                                                    <label class="flex items-center gap-2 text-gray-700">
+                                                        <input type="checkbox" name="order_ids[]" value="{{ $o->id }}" class="w-4 h-4 text-primary border-gray-300 rounded">
+                                                        <span class="text-sm">{{ $o->nomor_resi }}</span>
+                                                    </label>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </details>
+                                        <button class="w-full px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition">
+                                            Tandai Tiba
+                                        </button>
+                                    </form>
+                                </div>
+                                @endif
+
                                 <div class="bg-gray-50 border rounded-2xl p-5">
                                     <div class="font-bold text-gray-900">Selesaikan Pengiriman</div>
                                     <form method="POST" action="{{ route('admin.shipments.finish', $session) }}" class="mt-4 space-y-4">
@@ -86,10 +124,12 @@
                                             <summary class="cursor-pointer font-semibold text-gray-900">Selesaikan per Barang</summary>
                                             <div class="mt-3 space-y-2">
                                                 @foreach($orders as $o)
+                                                    @if(in_array($o->status, ['dalam_perjalanan', 'tiba_di_tujuan']))
                                                     <label class="flex items-center gap-2 text-gray-700">
                                                         <input type="checkbox" name="order_ids[]" value="{{ $o->id }}" class="w-4 h-4 text-primary border-gray-300 rounded">
                                                         <span class="font-semibold">{{ $o->nomor_resi }}</span>
                                                     </label>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                         </details>

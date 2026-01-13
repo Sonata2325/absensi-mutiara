@@ -38,18 +38,35 @@
 
             <!-- Menu -->
             <nav class="hidden md:flex gap-8">
-                @foreach([
-                    ['route' => 'home', 'label' => 'Beranda'],
-                    ['route' => 'services', 'label' => 'Layanan'],
-                    ['route' => 'tracking', 'label' => 'Lacak Paket'],
-                    ['route' => 'order', 'label' => 'Pesan Sekarang'],
-                    ['route' => 'contact', 'label' => 'Kontak']
-                ] as $item)
-                <a href="{{ route($item['route']) }}" class="group relative font-medium text-lg py-2 {{ request()->routeIs($item['route']) ? (request()->routeIs('home') ? 'text-white' : 'text-gray-800') : (request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-gray-800') }}">
-                    {{ $item['label'] }}
-                    <span class="absolute bottom-0 left-0 h-[3px] transition-all duration-300 {{ request()->routeIs('home') ? 'bg-white' : 'bg-gray-800' }} {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
-                </a>
-                @endforeach
+                @if(request()->is('admin*'))
+                    @foreach([
+                        ['route' => 'admin.orders.new', 'label' => 'Pesanan Baru'],
+                        ['route' => 'admin.grouping', 'label' => 'Scan Grouping'],
+                        ['route' => 'admin.shipments.active', 'label' => 'Shipment Aktif'],
+                        ['route' => 'admin.shipments.history', 'label' => 'Riwayat'],
+                        ['route' => 'admin.trucks.index', 'label' => 'Trucks'],
+                        ['route' => 'admin.drivers.index', 'label' => 'Drivers']
+                    ] as $item)
+                    <a href="{{ route($item['route']) }}" class="group relative font-medium text-lg py-2 {{ request()->routeIs($item['route']) ? 'text-blue-800' : 'text-gray-600 hover:text-gray-800' }}">
+                        {{ $item['label'] }}
+                        <span class="absolute bottom-0 left-0 h-[3px] transition-all duration-300 bg-blue-800 {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                    </a>
+                    @endforeach
+                    <a href="{{ route('home') }}" class="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-bold hover:bg-red-50 transition text-sm flex items-center">Exit Admin</a>
+                @else
+                    @foreach([
+                        ['route' => 'home', 'label' => 'Beranda'],
+                        ['route' => 'services', 'label' => 'Layanan'],
+                        ['route' => 'tracking', 'label' => 'Lacak Paket'],
+                        ['route' => 'order', 'label' => 'Pesan Sekarang'],
+                        ['route' => 'contact', 'label' => 'Kontak']
+                    ] as $item)
+                    <a href="{{ route($item['route']) }}" class="group relative font-medium text-lg py-2 {{ request()->routeIs($item['route']) ? (request()->routeIs('home') ? 'text-white' : 'text-gray-800') : (request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-gray-800') }}">
+                        {{ $item['label'] }}
+                        <span class="absolute bottom-0 left-0 h-[3px] transition-all duration-300 {{ request()->routeIs('home') ? 'bg-white' : 'bg-gray-800' }} {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                    </a>
+                    @endforeach
+                @endif
             </nav>
             
             <!-- Mobile Menu Button (Hamburger) -->
