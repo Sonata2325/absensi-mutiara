@@ -2,174 +2,119 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PT Mutiara Jaya Express</title>
-    <!-- Favicon: use the provided logopt mutiara image -->
-    <link rel="icon" href="{{ asset('logopt mutiara.png') }}" type="image/png">
-    <link rel="shortcut icon" href="{{ asset('logopt mutiara.png') }}" type="image/png">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-
-    <!-- Tailwind CSS (CDN for immediate usage) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Sistem Absensi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1d4ed8', // blue-700
-                        secondary: '#9333ea', // purple-600
-                    }
-                }
-            }
-        }
-    </script>
+    <style>
+        /* Mobile-friendly touch targets */
+        button, a { touch-action: manipulation; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 flex flex-col min-h-screen overflow-x-hidden">
-
-    <header id="siteHeader" class="fixed w-full z-50 top-0 {{ request()->routeIs('home') ? 'bg-transparent' : 'bg-white shadow-md' }} transition-all duration-300">
-        <div class="w-full mx-auto px-6 md:px-12 py-4 flex justify-between items-center">
-            <!-- Logo -->
-            <div class="flex items-center">
-                <a href="{{ route('home') }}" class="text-xl font-bold {{ request()->routeIs('home') ? 'text-white' : 'text-blue-800' }} flex items-center gap-2">
-                    <img src="{{ asset('logopt mutiara.png') }}" alt="PT Mutiara Jaya Express" class="w-8 h-8 rounded">
-                    PT Mutiara Jaya Express
-                </a>
+<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen pb-20 md:pb-0">
+    <!-- Header -->
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl tracking-tight text-blue-900">
+                <a href="{{ url('/') }}">Mutiara HR</a>
             </div>
 
-            <!-- Menu -->
-            <nav class="hidden md:flex gap-8">
-                @if(request()->is('admin*'))
-                    @foreach([
-                        ['route' => 'admin.orders.new', 'label' => 'Pesanan Baru'],
-                        ['route' => 'admin.grouping', 'label' => 'Scan Grouping'],
-                        ['route' => 'admin.shipments.active', 'label' => 'Shipment Aktif'],
-                        ['route' => 'admin.shipments.history', 'label' => 'Riwayat'],
-                        ['route' => 'admin.trucks.index', 'label' => 'Trucks'],
-                        ['route' => 'admin.drivers.index', 'label' => 'Drivers']
-                    ] as $item)
-                    <a href="{{ route($item['route']) }}" class="group relative font-medium text-lg py-2 {{ request()->routeIs($item['route']) ? 'text-blue-800' : 'text-gray-600 hover:text-gray-800' }}">
-                        {{ $item['label'] }}
-                        <span class="absolute bottom-0 left-0 h-[3px] transition-all duration-300 bg-blue-800 {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
-                    </a>
-                    @endforeach
-                    <a href="{{ route('home') }}" class="px-4 py-2 rounded-lg border border-red-500 text-red-500 font-bold hover:bg-red-50 transition text-sm flex items-center">Exit Admin</a>
-                @else
-                    @foreach([
-                        ['route' => 'home', 'label' => 'Beranda'],
-                        ['route' => 'services', 'label' => 'Layanan'],
-                        ['route' => 'tracking', 'label' => 'Lacak Paket'],
-                        ['route' => 'order', 'label' => 'Pesan Sekarang'],
-                        ['route' => 'contact', 'label' => 'Kontak']
-                    ] as $item)
-                    <a href="{{ route($item['route']) }}" class="group relative font-medium text-lg py-2 {{ request()->routeIs($item['route']) ? (request()->routeIs('home') ? 'text-white' : 'text-gray-800') : (request()->routeIs('home') ? 'text-white/90 hover:text-white' : 'text-gray-600 hover:text-gray-800') }}">
-                        {{ $item['label'] }}
-                        <span class="absolute bottom-0 left-0 h-[3px] transition-all duration-300 {{ request()->routeIs('home') ? 'bg-white' : 'bg-gray-800' }} {{ request()->routeIs($item['route']) ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
-                    </a>
-                    @endforeach
-                @endif
-            </nav>
-            
-            <!-- Mobile Menu Button (Hamburger) -->
-            <button id="mobileMenuBtn" class="md:hidden text-gray-600 focus:outline-none">
-                <svg class="w-8 h-8 {{ request()->routeIs('home') ? 'text-white' : 'text-gray-800' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </div>
-
-        <!-- Mobile Menu Overlay -->
-        <div id="mobileMenu" class="hidden absolute top-full left-0 w-full bg-white shadow-lg md:hidden flex flex-col py-4 px-6 gap-4 border-t border-gray-100 transition-all duration-300">
-            @foreach([
-                ['route' => 'home', 'label' => 'Beranda'],
-                ['route' => 'services', 'label' => 'Layanan'],
-                ['route' => 'tracking', 'label' => 'Lacak Paket'],
-                ['route' => 'order', 'label' => 'Pesan Sekarang'],
-                ['route' => 'contact', 'label' => 'Kontak']
-            ] as $item)
-            <a href="{{ route($item['route']) }}" class="text-lg font-medium py-2 border-b border-gray-50 {{ request()->routeIs($item['route']) ? 'text-blue-700' : 'text-gray-700 hover:text-blue-600' }}">
-                {{ $item['label'] }}
-            </a>
-            @endforeach
+            <div class="flex items-center gap-3">
+                @auth
+                    <div class="hidden md:block text-sm text-gray-700 font-medium">
+                        {{ auth()->user()->name }} <span class="text-xs text-gray-500">({{ auth()->user()->role }})</span>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="p-2 rounded-lg hover:bg-gray-100 text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        </button>
+                    </form>
+                @endauth
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow {{ request()->routeIs('home') ? 'pt-0' : 'pt-16' }}">
-        @yield('content')
-    </main>
+    @auth
+    <!-- Mobile Bottom Nav -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-40 pb-safe">
+        <div class="flex justify-around items-center h-16 px-2">
+            @if((auth()->user()->role ?? '') === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('admin.dashboard') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <span class="text-[10px] font-medium mt-1">Dash</span>
+                </a>
+                <a href="{{ route('admin.attendance.monitor') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('admin.attendance.*') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                    <span class="text-[10px] font-medium mt-1">Absen</span>
+                </a>
+                <a href="{{ route('admin.karyawan.index') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('admin.karyawan.*') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span class="text-[10px] font-medium mt-1">Staff</span>
+                </a>
+                <a href="{{ route('admin.leave.index') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('admin.leave.*') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <span class="text-[10px] font-medium mt-1">Izin</span>
+                </a>
+                <a href="{{ route('admin.settings.edit') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('admin.settings.*') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span class="text-[10px] font-medium mt-1">Set</span>
+                </a>
+            @else
+                <a href="{{ route('karyawan.dashboard') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('karyawan.dashboard') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <span class="text-[10px] font-medium mt-1">Home</span>
+                </a>
+                <a href="{{ route('karyawan.attendance.index') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('karyawan.attendance.*') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 12h-6.75"></path><path d="M17.25 17.25 23 12l-5.75-5.25"></path><path d="M10 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle></svg>
+                    <span class="text-[10px] font-medium mt-1">Absen</span>
+                </a>
+                <a href="{{ route('karyawan.leave.index') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('karyawan.leave.*') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <span class="text-[10px] font-medium mt-1">Izin</span>
+                </a>
+                <a href="{{ route('karyawan.profile.edit') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('karyawan.profile.*') ? 'text-blue-600' : 'text-gray-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span class="text-[10px] font-medium mt-1">Profil</span>
+                </a>
+            @endif
+        </div>
+    </nav>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white pt-12 pb-12" id="contact">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-center gap-12 text-center md:text-left">
-                <!-- Company Info -->
-                <div class="md:w-1/3">
-                    <h3 class="text-xl font-bold mb-4">PT Mutiara Jaya Express</h3>
-                    <p class="text-gray-400 leading-relaxed">Jasa pengiriman barang terpercaya sejak 2003. Melayani distribusi ke seluruh kota besar di Pulau Jawa dengan armada lengkap dan profesional.</p>
-                </div>
-
-                <!-- Contact Info -->
-                <div class="md:w-1/3">
-                    <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
-                    <ul class="text-gray-400 space-y-3 inline-block text-left">
-                        <li class="flex items-start gap-3">
-                            <svg class="w-6 h-6 mt-0.5 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            <span>Ruko Jelambar Center, Blok E41<br>Jl. P. TB. Angke No. 10<br>Jelambar Baru, Jakarta Barat</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <svg class="w-6 h-6 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                            <span>+62821 1146 4350<br>+62852 1211 7630</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <svg class="w-6 h-6 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                            <span class="uppercase">EKSPEDISI_MUTIARA@YAHOO.COM</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} PT Mutiara Jaya Express. All rights reserved.
+    <!-- Desktop Nav -->
+    <nav class="hidden md:block bg-white border-b">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex space-x-1 overflow-x-auto hide-scrollbar py-2">
+                @if((auth()->user()->role ?? '') === 'admin')
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.karyawan.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.departments.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.departments.index') }}">Department</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.shifts.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.attendance.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.leave.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.leave.index') }}">Izin</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.reports.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
+                @else
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.dashboard') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.dashboard') }}">Dashboard</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.attendance.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.attendance.index') }}">Absensi</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.leave.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.leave.index') }}">Izin</a>
+                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.profile.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.profile.edit') }}">Profile</a>
+                @endif
             </div>
         </div>
-    </footer>
+    </nav>
+    @endauth
 
-    <!-- Global Scripts -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Toggle
-            const btn = document.getElementById('mobileMenuBtn');
-            const menu = document.getElementById('mobileMenu');
-            
-            if(btn && menu) {
-                btn.addEventListener('click', function() {
-                    menu.classList.toggle('hidden');
-                });
-            }
-        });
-    </script>
+    <main class="max-w-6xl mx-auto px-4 py-6 md:py-8">
+        @if (session('status'))
+            <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                {{ session('status') }}
+            </div>
+        @endif
 
-    @if (request()->routeIs('home'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function(){
-            var h = document.getElementById('siteHeader');
-            function onScroll(){
-                var y = window.scrollY || document.documentElement.scrollTop;
-                var scrolled = y > 5;
-                h.classList.toggle('bg-transparent', !scrolled);
-                h.classList.toggle('bg-black/30', scrolled);
-                h.classList.toggle('backdrop-blur-sm', scrolled);
-                h.classList.toggle('shadow', scrolled);
-                h.classList.toggle('rounded-b-lg', scrolled);
-            }
-            onScroll();
-            window.addEventListener('scroll', onScroll, {passive:true});
-        });
-    </script>
-    @endif
-
+        @yield('content')
+    </main>
 </body>
 </html>
