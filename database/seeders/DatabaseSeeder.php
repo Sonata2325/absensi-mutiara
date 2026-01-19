@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
         Setting::setValue('office_radius_meters', '200');
 
         User::firstOrCreate(
-            ['email' => 'admin@absensi.test'],
+            ['phone' => '081234567890'],
             [
                 'name' => 'Admin',
                 'password' => 'password',
@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
         );
 
         User::firstOrCreate(
-            ['email' => 'karyawan@absensi.test'],
+            ['phone' => '089876543210'],
             [
                 'name' => 'Karyawan',
                 'password' => 'password',

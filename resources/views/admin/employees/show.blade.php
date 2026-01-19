@@ -19,13 +19,10 @@
         <div class="font-medium">{{ $employee->name }}</div>
     </div>
     <div>
-        <div class="text-sm text-gray-600">Email</div>
-        <div class="font-medium">{{ $employee->email }}</div>
-    </div>
-    <div>
-        <div class="text-sm text-gray-600">Phone</div>
+        <div class="text-sm text-gray-600">Nomor Telepon</div>
         <div class="font-medium">{{ $employee->phone }}</div>
     </div>
+
     <div>
         <div class="text-sm text-gray-600">Department</div>
         <div class="font-medium">{{ $employee->department?->nama_department }}</div>

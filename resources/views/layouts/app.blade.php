@@ -12,29 +12,45 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen pb-20 md:pb-0">
+<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen {{ request()->routeIs('login') ? '' : 'pb-20 md:pb-0' }}">
     <!-- Header -->
+    @unless(request()->routeIs('login'))
     <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="font-bold text-xl tracking-tight text-blue-900">
-                <a href="{{ url('/') }}">Mutiara HR</a>
+        <div class="w-full px-4 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl tracking-tight text-[#D61600]">
+                <a href="{{ url('/') }}" class="flex items-center gap-3">
+                    <img src="{{ asset('LOGO PT.Mutiara.jpeg') }}" alt="Logo" class="h-10 w-auto">
+                    <span>PT Mutiara Jaya Express</span>
+                </a>
             </div>
 
-            <div class="flex items-center gap-3">
-                @auth
-                    <div class="hidden md:block text-sm text-gray-700 font-medium">
-                        {{ auth()->user()->name }} <span class="text-xs text-gray-500">({{ auth()->user()->role }})</span>
-                    </div>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="p-2 rounded-lg hover:bg-gray-100 text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                        </button>
-                    </form>
-                @endauth
+            <div class="flex items-center gap-6">
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-6 h-16">
+                    @auth
+                        @if((auth()->user()->role ?? '') === 'admin')
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.karyawan.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.departments.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.departments.index') }}">Department</a>
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.shifts.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.leave.index') }}">Izin</a>
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.reports.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
+                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.settings.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
+                        @else
+                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.dashboard') }}">Beranda</a>
+                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.attendance.index') }}">Absensi</a>
+                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.leave.index') }}">Izin</a>
+                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.profile.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.profile.edit') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </a>
+                        @endif
+                    @endauth
+                </div>
             </div>
         </div>
     </header>
+    @endunless
 
     @auth
     <!-- Mobile Bottom Nav -->
@@ -82,31 +98,10 @@
         </div>
     </nav>
 
-    <!-- Desktop Nav -->
-    <nav class="hidden md:block bg-white border-b">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex space-x-1 overflow-x-auto hide-scrollbar py-2">
-                @if((auth()->user()->role ?? '') === 'admin')
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.karyawan.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.departments.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.departments.index') }}">Department</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.shifts.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.attendance.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.leave.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.leave.index') }}">Izin</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.reports.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
-                @else
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.dashboard') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.dashboard') }}">Dashboard</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.attendance.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.attendance.index') }}">Absensi</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.leave.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.leave.index') }}">Izin</a>
-                    <a class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('karyawan.profile.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}" href="{{ route('karyawan.profile.edit') }}">Profile</a>
-                @endif
-            </div>
-        </div>
-    </nav>
+
     @endauth
 
-    <main class="max-w-6xl mx-auto px-4 py-6 md:py-8">
+    <main class="{{ request()->routeIs('login') ? 'w-full' : 'max-w-6xl mx-auto px-4 py-6 md:py-8' }}">
         @if (session('status'))
             <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>

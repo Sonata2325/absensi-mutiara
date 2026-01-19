@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'phone' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
@@ -23,8 +23,8 @@ class AuthController extends Controller
 
         if (! Auth::attempt($credentials, $remember)) {
             return back()
-                ->withErrors(['email' => 'Email atau password salah.'])
-                ->onlyInput('email');
+                ->withErrors(['phone' => 'Nomor Telepon atau password salah.'])
+                ->onlyInput('phone');
         }
 
         $request->session()->regenerate();

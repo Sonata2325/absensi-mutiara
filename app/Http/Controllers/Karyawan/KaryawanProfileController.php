@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Validation\Rule;
+
 class KaryawanProfileController extends Controller
 {
     public function edit(Request $request)
@@ -21,7 +23,7 @@ class KaryawanProfileController extends Controller
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'phone' => ['required', 'string', 'max:50', Rule::unique('users', 'phone')->ignore($user->id)],
             'alamat' => ['nullable', 'string'],
             'kontak_darurat' => ['nullable', 'string', 'max:255'],
             'foto_profile' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:4096'],

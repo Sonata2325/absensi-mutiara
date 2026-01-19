@@ -64,7 +64,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 });
 
 Route::prefix('karyawan')->name('karyawan.')->middleware(['auth', 'role:employee'])->group(function () {
-    Route::get('/dashboard', [KaryawanDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/beranda', [KaryawanDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/absensi', [KaryawanAttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/absensi/clock-in', [KaryawanAttendanceController::class, 'clockIn'])->name('attendance.clock_in');

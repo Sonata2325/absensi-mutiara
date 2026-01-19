@@ -19,20 +19,16 @@
             @error('name')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
         </div>
         <div>
-            <label class="text-sm font-medium">Email</label>
-            <input name="email" type="email" value="{{ old('email', $employee->email) }}" class="mt-1 w-full border rounded-lg px-3 py-2" required>
-            @error('email')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
+            <label class="text-sm font-medium">Nomor Telepon</label>
+            <input name="phone" value="{{ old('phone', $employee->phone) }}" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+            @error('phone')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
         </div>
         <div>
             <label class="text-sm font-medium">Password Baru (opsional)</label>
             <input name="password" type="password" class="mt-1 w-full border rounded-lg px-3 py-2">
             @error('password')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
         </div>
-        <div>
-            <label class="text-sm font-medium">Phone</label>
-            <input name="phone" value="{{ old('phone', $employee->phone) }}" class="mt-1 w-full border rounded-lg px-3 py-2">
-            @error('phone')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
-        </div>
+
         <div>
             <label class="text-sm font-medium">Position</label>
             <input name="position" value="{{ old('position', $employee->position) }}" class="mt-1 w-full border rounded-lg px-3 py-2">

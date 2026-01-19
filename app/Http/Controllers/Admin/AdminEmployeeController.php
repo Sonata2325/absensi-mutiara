@@ -35,9 +35,8 @@ class AdminEmployeeController extends Controller
         $data = $request->validate([
             'nip' => ['required', 'string', 'max:50', 'unique:users,nip'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'phone' => ['required', 'string', 'max:50', 'unique:users,phone'],
             'department_id' => ['nullable', 'exists:departments,id'],
             'shift_id' => ['nullable', 'exists:shifts,id'],
             'position' => ['nullable', 'string', 'max:255'],
@@ -80,9 +79,8 @@ class AdminEmployeeController extends Controller
         $data = $request->validate([
             'nip' => ['required', 'string', 'max:50', Rule::unique('users', 'nip')->ignore($employee->id)],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($employee->id)],
             'password' => ['nullable', 'string', 'min:6'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'phone' => ['required', 'string', 'max:50', Rule::unique('users', 'phone')->ignore($employee->id)],
             'department_id' => ['nullable', 'exists:departments,id'],
             'shift_id' => ['nullable', 'exists:shifts,id'],
             'position' => ['nullable', 'string', 'max:255'],
