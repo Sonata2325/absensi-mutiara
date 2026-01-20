@@ -40,15 +40,16 @@ class AdminDashboardController extends Controller
 
         $attendanceByDay = Attendance::query()
             ->select([
-                DB::raw('date(tanggal) as tanggal'),
+                DB::raw('DATE(tanggal) as date_only'),
                 DB::raw("sum(case when status = 'hadir' then 1 else 0 end) as hadir"),
                 DB::raw("sum(case when status = 'terlambat' then 1 else 0 end) as terlambat"),
+                DB::raw("sum(case when status = 'alpha' then 1 else 0 end) as alpha"),
             ])
             ->whereBetween('tanggal', [$monthStartDt, $monthEndDt])
-            ->groupBy('tanggal')
-            ->orderBy('tanggal')
+            ->groupBy('date_only')
+            ->orderBy('date_only')
             ->get()
-            ->keyBy(fn ($row) => (string) $row->tanggal);
+            ->keyBy('date_only');
 
         $period = CarbonPeriod::create(Carbon::parse($monthStart), Carbon::parse($monthEnd));
         $chart = [];
@@ -59,6 +60,7 @@ class AdminDashboardController extends Controller
                 'tanggal' => $key,
                 'hadir' => (int) ($row?->hadir ?? 0),
                 'terlambat' => (int) ($row?->terlambat ?? 0),
+                'alpha' => (int) ($row?->alpha ?? 0),
             ];
         }
 

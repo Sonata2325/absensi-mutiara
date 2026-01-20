@@ -12,12 +12,12 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen {{ request()->routeIs('login') ? '' : 'pb-20 md:pb-0' }}">
+<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen {{ request()->routeIs('login') ? '' : 'pb-20 md:pb-0 pt-16' }}">
     <!-- Header -->
     @unless(request()->routeIs('login'))
-    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+    <header class="bg-white/90 backdrop-blur border-b fixed top-0 left-0 right-0 z-50 shadow-sm">
         <div class="w-full px-4 h-16 flex items-center justify-between">
-            <div class="font-bold text-xl tracking-tight text-[#D61600]">
+            <div class="font-bold text-lg md:text-xl tracking-tight text-[#D61600]">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
                     <img src="{{ asset('LOGO PT.Mutiara.jpeg') }}" alt="Logo" class="h-10 w-auto">
                     <span>PT Mutiara Jaya Express</span>
@@ -26,17 +26,17 @@
 
             <div class="flex items-center gap-6">
                 <!-- Desktop Nav -->
-                <div class="hidden md:flex items-center gap-6 h-16">
+                <div class="hidden md:flex items-center gap-2 h-16">
                     @auth
                         @if((auth()->user()->role ?? '') === 'admin')
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.karyawan.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.departments.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.departments.index') }}">Department</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.shifts.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.leave.index') }}">Izin</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.reports.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.settings.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.dashboard') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.karyawan.*') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.departments.*') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.departments.index') }}">Department</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.shifts.*') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.attendance.*') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.leave.*') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.leave.index') }}">Izin</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.reports.*') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
+                            <a class="flex items-center h-10 px-3 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.settings.*') ? 'bg-red-50 text-[#D61600]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
                         @else
                             <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.dashboard') }}">Beranda</a>
                             <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.attendance.index') }}">Absensi</a>
@@ -47,6 +47,17 @@
                         @endif
                     @endauth
                 </div>
+
+                @auth
+                <!-- Logout Button -->
+                <form method="POST" action="{{ route('logout') }}" class="flex items-center ml-2">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-2 text-gray-500 hover:text-[#D61600] hover:bg-gray-50 transition font-medium px-3 py-2 rounded-lg" title="Keluar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <span class="hidden md:inline">Keluar</span>
+                    </button>
+                </form>
+                @endauth
             </div>
         </div>
     </header>
@@ -101,7 +112,7 @@
 
     @endauth
 
-    <main class="{{ request()->routeIs('login') ? 'w-full' : 'max-w-6xl mx-auto px-4 py-6 md:py-8' }}">
+    <main class="{{ request()->routeIs('login') ? 'w-full' : ((auth()->user()->role ?? '') === 'admin' ? 'max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8' : 'max-w-6xl mx-auto px-4 py-6 md:py-8') }}">
         @if (session('status'))
             <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>

@@ -61,5 +61,33 @@ class DatabaseSeeder extends Seeder
                 'status' => 'aktif',
             ]
         );
+
+        $employees = [
+            ['name' => 'Andi Saputra', 'phone' => '081300000001', 'nip' => 'EMP002'],
+            ['name' => 'Budi Hartono', 'phone' => '081300000002', 'nip' => 'EMP003'],
+            ['name' => 'Citra Lestari', 'phone' => '081300000003', 'nip' => 'EMP004'],
+            ['name' => 'Dewi Anggraini', 'phone' => '081300000004', 'nip' => 'EMP005'],
+            ['name' => 'Eko Pratama', 'phone' => '081300000005', 'nip' => 'EMP006'],
+            ['name' => 'Fajar Hidayat', 'phone' => '081300000006', 'nip' => 'EMP007'],
+            ['name' => 'Gita Maharani', 'phone' => '081300000007', 'nip' => 'EMP008'],
+            ['name' => 'Hendra Wijaya', 'phone' => '081300000008', 'nip' => 'EMP009'],
+            ['name' => 'Intan Permata', 'phone' => '081300000009', 'nip' => 'EMP010'],
+            ['name' => 'Joko Susilo', 'phone' => '081300000010', 'nip' => 'EMP011'],
+        ];
+
+        foreach ($employees as $employee) {
+            User::firstOrCreate(
+                ['phone' => $employee['phone']],
+                [
+                    'name' => $employee['name'],
+                    'password' => 'password',
+                    'role' => 'employee',
+                    'nip' => $employee['nip'],
+                    'department_id' => $department->id,
+                    'shift_id' => $shift->id,
+                    'status' => 'aktif',
+                ]
+            );
+        }
     }
 }

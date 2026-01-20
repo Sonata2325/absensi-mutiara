@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<h1 class="text-2xl font-bold mb-6">Monitor Absensi Real-time</h1>
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Monitor Absensi Real-time</h1>
+        <p class="text-gray-500 mt-1 text-sm">Pantau status kehadiran hari ini</p>
+    </div>
+</div>
 
-<div class="bg-white border rounded-2xl p-4 mb-6 text-sm text-gray-700">
-    <div class="font-bold mb-1">Office</div>
+<div class="bg-white border border-gray-100 rounded-2xl p-4 mb-6 text-sm text-gray-700">
+    <div class="font-semibold mb-1 text-gray-900">Office</div>
     <div>
         Lat: {{ $office['lat'] ?: '-' }}, Lng: {{ $office['lng'] ?: '-' }}, Radius: {{ $office['radius'] }}m
         @if($office['lat'] !== '' && $office['lng'] !== '')
@@ -14,10 +19,10 @@
     </div>
 </div>
 
-<div class="bg-white border rounded-2xl shadow-sm overflow-hidden">
+<div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-left">
+            <thead class="bg-gray-50 text-left text-xs uppercase tracking-wider text-gray-500">
                 <tr>
                     <th class="p-3">NIP</th>
                     <th class="p-3">Nama</th>
@@ -37,17 +42,17 @@
                         $lv = $leaveToday->get($e->id);
                         $status = $lv ? 'izin' : ($att?->status ?? 'belum absen');
                     @endphp
-                    <tr class="border-t">
+                    <tr class="border-t hover:bg-gray-50">
                         <td class="p-3">{{ $e->nip }}</td>
                         <td class="p-3">{{ $e->name }}</td>
                         <td class="p-3">{{ $e->department?->nama_department }}</td>
                         <td class="p-3">{{ $e->shift?->nama_shift }}</td>
                         <td class="p-3">
-                            <span class="px-2 py-1 rounded text-xs font-bold
-                                {{ $status === 'hadir' ? 'bg-green-100 text-green-800' : '' }}
-                                {{ $status === 'terlambat' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                {{ $status === 'izin' ? 'bg-blue-100 text-blue-800' : '' }}
-                                {{ $status === 'belum absen' ? 'bg-gray-100 text-gray-800' : '' }}
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
+                                {{ $status === 'hadir' ? 'bg-green-50 text-green-700 ring-1 ring-green-200' : '' }}
+                                {{ $status === 'terlambat' ? 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200' : '' }}
+                                {{ $status === 'izin' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200' : '' }}
+                                {{ $status === 'belum absen' ? 'bg-gray-100 text-gray-700 ring-1 ring-gray-200' : '' }}
                             ">
                                 {{ ucfirst($status) }}
                             </span>
