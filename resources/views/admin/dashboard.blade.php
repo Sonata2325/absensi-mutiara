@@ -2,12 +2,12 @@
 
 @section('content')
 <div class="flex flex-col gap-6">
-    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
             <p class="text-gray-500 text-sm mt-1">Ringkasan kehadiran dan aktivitas terbaru</p>
         </div>
-        <div class="flex items-center gap-2 text-gray-600 bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+        <div class="flex items-center gap-2 text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-100 shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>

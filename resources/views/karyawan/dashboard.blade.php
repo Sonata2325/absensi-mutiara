@@ -33,10 +33,6 @@
                     @endif
                 </div>
             </div>
-            <div class="text-center md:text-right text-white/90">
-                <div id="dashboard-realtime-clock" class="text-3xl font-bold tracking-tight">{{ now()->format('H:i:s') }}</div>
-                <div id="dashboard-realtime-date" class="text-sm">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</div>
-            </div>
         </div>
     </div>
 
@@ -96,20 +92,4 @@
         </div>
     </div>
 </div>
-<script>
-    function updateDashboardClock() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(/\./g, ':');
-        const dateString = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-        const clockEl = document.getElementById('dashboard-realtime-clock');
-        const dateEl = document.getElementById('dashboard-realtime-date');
-
-        if (clockEl) clockEl.innerText = timeString;
-        if (dateEl) dateEl.innerText = dateString;
-    }
-
-    setInterval(updateDashboardClock, 1000);
-    updateDashboardClock();
-</script>
 @endsection
