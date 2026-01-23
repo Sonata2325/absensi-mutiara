@@ -8,6 +8,7 @@ use App\Models\LeaveRequest;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class KaryawanAttendanceController extends Controller
 {
@@ -28,11 +29,13 @@ class KaryawanAttendanceController extends Controller
             ->whereDate('tanggal_selesai', '>=', $today)
             ->first();
 
-        $settings = [
-            'office_lat' => Setting::getValue('office_lat', ''),
-            'office_lng' => Setting::getValue('office_lng', ''),
-            'office_radius_meters' => (int) (Setting::getValue('office_radius_meters', '200') ?? '200'),
-        ];
+        $settings = Cache::remember('office_settings', 600, function () {
+            return [
+                'office_lat' => Setting::getValue('office_lat', ''),
+                'office_lng' => Setting::getValue('office_lng', ''),
+                'office_radius_meters' => (int) (Setting::getValue('office_radius_meters', '200') ?? '200'),
+            ];
+        });
 
         return view('karyawan.attendance.index', [
             'attendance' => $attendance,

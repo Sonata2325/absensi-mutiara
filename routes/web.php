@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAttendanceMonitorController;
 use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminDepartmentController;
+use App\Http\Controllers\Admin\AdminPositionController;
 use App\Http\Controllers\Admin\AdminEmployeeController;
 use App\Http\Controllers\Admin\AdminLeaveRequestController;
 use App\Http\Controllers\Admin\AdminReportController;
@@ -25,15 +25,24 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'database' => \Illuminate\Support\Facades\DB::connection()->getPdo() ? 'connected' : 'disconnected',
+        'cache' => \Illuminate\Support\Facades\Cache::has('health_check') || \Illuminate\Support\Facades\Cache::put('health_check', 1, 10) ? 'ok' : 'fail',
+        'timestamp' => now()->toIso8601String(),
+    ]);
+});
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit')->middleware('throttle:10,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin', 'request.log'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('karyawan', AdminEmployeeController::class)->parameters(['karyawan' => 'employee']);
-    Route::resource('departments', AdminDepartmentController::class)->parameters(['departments' => 'department']);
+    Route::resource('positions', AdminPositionController::class)->parameters(['positions' => 'position']);
     Route::resource('shifts', AdminShiftController::class)->parameters(['shifts' => 'shift']);
 
     Route::get('/absensi/monitor', [AdminAttendanceMonitorController::class, 'index'])->name('attendance.monitor');

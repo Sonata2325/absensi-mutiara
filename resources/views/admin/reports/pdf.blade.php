@@ -18,9 +18,8 @@
             <thead class="bg-gray-50 text-left">
                 <tr>
                     <th class="p-2">Tanggal</th>
-                    <th class="p-2">NIP</th>
                     <th class="p-2">Nama</th>
-                    <th class="p-2">Department</th>
+                    <th class="p-2">Posisi</th>
                     <th class="p-2">Shift</th>
                     <th class="p-2">Masuk</th>
                     <th class="p-2">Keluar</th>
@@ -31,9 +30,8 @@
                 @foreach($attendances as $a)
                     <tr class="border-t">
                         <td class="p-2">{{ $a->tanggal?->toDateString() }}</td>
-                        <td class="p-2">{{ $a->employee?->nip }}</td>
                         <td class="p-2">{{ $a->employee?->name }}</td>
-                        <td class="p-2">{{ $a->employee?->department?->nama_department }}</td>
+                        <td class="p-2">{{ $a->employee?->position?->nama_posisi }}</td>
                         <td class="p-2">{{ $a->employee?->shift?->nama_shift }}</td>
                         <td class="p-2">{{ $a->jam_masuk }}</td>
                         <td class="p-2">{{ $a->jam_keluar }}</td>
@@ -45,4 +43,3 @@
     </div>
 </body>
 </html>
-

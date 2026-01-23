@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminSettingsController extends Controller
 {
@@ -36,6 +37,7 @@ class AdminSettingsController extends Controller
         foreach ($data as $key => $value) {
             Setting::setValue($key, $value === null ? null : (string) $value);
         }
+        Cache::forget('office_settings');
 
         return back()->with('status', 'Settings berhasil disimpan.');
     }

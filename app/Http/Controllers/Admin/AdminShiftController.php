@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Shift;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminShiftController extends Controller
 {
@@ -35,6 +36,7 @@ class AdminShiftController extends Controller
         $data['toleransi_terlambat'] = (int) ($data['toleransi_terlambat'] ?? 0);
 
         Shift::create($data);
+        Cache::forget('shifts_all');
 
         return redirect()->route('admin.shifts.index')->with('status', 'Shift berhasil dibuat.');
     }
@@ -59,6 +61,7 @@ class AdminShiftController extends Controller
         $data['toleransi_terlambat'] = (int) ($data['toleransi_terlambat'] ?? 0);
 
         $shift->update($data);
+        Cache::forget('shifts_all');
 
         return redirect()->route('admin.shifts.index')->with('status', 'Shift berhasil diupdate.');
     }
@@ -70,6 +73,7 @@ class AdminShiftController extends Controller
         }
 
         $shift->delete();
+        Cache::forget('shifts_all');
 
         return redirect()->route('admin.shifts.index')->with('status', 'Shift berhasil dihapus.');
     }

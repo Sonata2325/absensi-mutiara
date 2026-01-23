@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('role')->default('employee')->after('password');
             $table->string('nip')->nullable()->unique()->after('role');
-            $table->string('phone')->nullable()->after('nip');
+            $table->string('phone')->unique()->after('nip');
             $table->unsignedBigInteger('department_id')->nullable()->index()->after('phone');
             $table->unsignedBigInteger('shift_id')->nullable()->index()->after('department_id');
             $table->string('position')->nullable()->after('shift_id');

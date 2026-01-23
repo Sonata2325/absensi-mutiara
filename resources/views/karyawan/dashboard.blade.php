@@ -26,8 +26,8 @@
                 <div class="space-y-1 text-red-50 text-sm md:text-base font-medium">
                     <p class="text-white/90">{{ auth()->user()->phone }}</p>
                     <p class="uppercase opacity-90">Status: Aktif</p>
-                    @if(auth()->user()->department)
-                        <p class="uppercase opacity-90">{{ auth()->user()->department->name }}</p>
+                    @if(auth()->user()->position)
+                        <p class="uppercase opacity-90">{{ auth()->user()->position->nama_posisi }}</p>
                     @else
                          <p class="uppercase opacity-90">KARYAWAN</p>
                     @endif

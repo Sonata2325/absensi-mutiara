@@ -30,9 +30,8 @@
             <thead class="bg-gray-50 text-left text-xs uppercase tracking-wider text-gray-500">
                 <tr>
                     <th class="p-3">Tanggal</th>
-                    <th class="p-3">NIP</th>
                     <th class="p-3">Nama</th>
-                    <th class="p-3">Department</th>
+                    <th class="p-3">Posisi</th>
                     <th class="p-3">Shift</th>
                     <th class="p-3">Masuk</th>
                     <th class="p-3">Keluar</th>
@@ -43,9 +42,8 @@
                 @forelse($attendances as $a)
                     <tr class="border-t hover:bg-gray-50">
                         <td class="p-3">{{ $a->tanggal?->toDateString() }}</td>
-                        <td class="p-3">{{ $a->employee?->nip }}</td>
                         <td class="p-3">{{ $a->employee?->name }}</td>
-                        <td class="p-3">{{ $a->employee?->department?->nama_department }}</td>
+                        <td class="p-3">{{ $a->employee?->position?->nama_posisi }}</td>
                         <td class="p-3">{{ $a->employee?->shift?->nama_shift }}</td>
                         <td class="p-3">{{ $a->jam_masuk }}</td>
                         <td class="p-3">{{ $a->jam_keluar }}</td>

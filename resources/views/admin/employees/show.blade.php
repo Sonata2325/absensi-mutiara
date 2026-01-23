@@ -11,10 +11,6 @@
 
 <div class="bg-white border rounded-2xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
-        <div class="text-sm text-gray-600">NIP</div>
-        <div class="font-medium">{{ $employee->nip }}</div>
-    </div>
-    <div>
         <div class="text-sm text-gray-600">Nama</div>
         <div class="font-medium">{{ $employee->name }}</div>
     </div>
@@ -24,16 +20,12 @@
     </div>
 
     <div>
-        <div class="text-sm text-gray-600">Department</div>
-        <div class="font-medium">{{ $employee->department?->nama_department }}</div>
+        <div class="text-sm text-gray-600">Posisi</div>
+        <div class="font-medium">{{ $employee->position?->nama_posisi }}</div>
     </div>
     <div>
         <div class="text-sm text-gray-600">Shift</div>
         <div class="font-medium">{{ $employee->shift?->nama_shift }}</div>
-    </div>
-    <div>
-        <div class="text-sm text-gray-600">Position</div>
-        <div class="font-medium">{{ $employee->position }}</div>
     </div>
     <div>
         <div class="text-sm text-gray-600">Tanggal Masuk</div>

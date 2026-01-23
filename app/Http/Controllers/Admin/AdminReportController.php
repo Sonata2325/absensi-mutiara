@@ -21,7 +21,7 @@ class AdminReportController extends Controller
 
         $attendances = Attendance::query()
             ->whereBetween('tanggal', [$startDt, $endDt])
-            ->with(['employee.department', 'employee.shift'])
+            ->with(['employee.position', 'employee.shift'])
             ->orderBy('tanggal')
             ->orderBy('employee_id')
             ->get();
@@ -47,7 +47,7 @@ class AdminReportController extends Controller
 
         $rows = Attendance::query()
             ->whereBetween('tanggal', [$startDt, $endDt])
-            ->with(['employee.department', 'employee.shift'])
+            ->with(['employee.position', 'employee.shift'])
             ->orderBy('tanggal')
             ->orderBy('employee_id')
             ->get();
@@ -55,13 +55,12 @@ class AdminReportController extends Controller
         $filename = "laporan-absensi-{$year}-".str_pad((string) $month, 2, '0', STR_PAD_LEFT).'.csv';
 
         $handle = fopen('php://temp', 'r+');
-        fputcsv($handle, ['Tanggal', 'NIP', 'Nama', 'Department', 'Shift', 'Jam Masuk', 'Jam Keluar', 'Status', 'Keterangan']);
+        fputcsv($handle, ['Tanggal', 'Nama', 'Posisi', 'Shift', 'Jam Masuk', 'Jam Keluar', 'Status', 'Keterangan']);
         foreach ($rows as $row) {
             fputcsv($handle, [
                 (string) $row->tanggal?->toDateString(),
-                (string) ($row->employee?->nip ?? ''),
                 (string) ($row->employee?->name ?? ''),
-                (string) ($row->employee?->department?->nama_department ?? ''),
+                (string) ($row->employee?->position?->nama_posisi ?? ''),
                 (string) ($row->employee?->shift?->nama_shift ?? ''),
                 (string) ($row->jam_masuk ?? ''),
                 (string) ($row->jam_keluar ?? ''),
@@ -91,7 +90,7 @@ class AdminReportController extends Controller
 
         $attendances = Attendance::query()
             ->whereBetween('tanggal', [$startDt, $endDt])
-            ->with(['employee.department', 'employee.shift'])
+            ->with(['employee.position', 'employee.shift'])
             ->orderBy('tanggal')
             ->orderBy('employee_id')
             ->get();

@@ -17,7 +17,7 @@ class AdminAttendanceMonitorController extends Controller
 
         $employees = User::query()
             ->where('role', 'employee')
-            ->with(['department', 'shift'])
+            ->with(['position', 'shift'])
             ->orderBy('name')
             ->get();
 

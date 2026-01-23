@@ -11,10 +11,9 @@
         <table class="min-w-full text-sm">
             <thead class="bg-gray-50 text-left">
                 <tr>
-                    <th class="p-3">NIP</th>
                     <th class="p-3">Nama</th>
                     <th class="p-3">Nomor Telepon</th>
-                    <th class="p-3">Department</th>
+                    <th class="p-3">Posisi</th>
                     <th class="p-3">Shift</th>
                     <th class="p-3">Status</th>
                     <th class="p-3">Aksi</th>
@@ -23,10 +22,9 @@
             <tbody>
                 @foreach($employees as $e)
                     <tr class="border-t">
-                        <td class="p-3">{{ $e->nip }}</td>
                         <td class="p-3">{{ $e->name }}</td>
                         <td class="p-3">{{ $e->phone }}</td>
-                        <td class="p-3">{{ $e->department?->nama_department }}</td>
+                        <td class="p-3">{{ $e->position?->nama_posisi }}</td>
                         <td class="p-3">{{ $e->shift?->nama_shift }}</td>
                         <td class="p-3">{{ $e->status }}</td>
                         <td class="p-3 flex gap-2">
@@ -47,4 +45,3 @@
 
 <div class="mt-6">{{ $employees->links() }}</div>
 @endsection
-

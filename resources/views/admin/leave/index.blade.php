@@ -24,7 +24,7 @@
             <tbody>
                 @foreach($leaves as $l)
                     <tr class="border-t hover:bg-gray-50">
-                        <td class="p-3">{{ $l->employee?->name }} ({{ $l->employee?->nip }})</td>
+                        <td class="p-3">{{ $l->employee?->name }}</td>
                         <td class="p-3">{{ ucwords(str_replace('_', ' ', $l->tipe)) }}</td>
                         <td class="p-3">{{ $l->tanggal_mulai?->toDateString() }} - {{ $l->tanggal_selesai?->toDateString() }}</td>
                         <td class="p-3">{{ $l->alasan }}</td>

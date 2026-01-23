@@ -2,12 +2,13 @@
 
 @section('content')
 <div class="flex flex-col gap-6">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-center md:text-left">
             <h1 class="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
             <p class="text-gray-500 text-sm mt-1">Ringkasan kehadiran dan aktivitas terbaru</p>
         </div>
-        <div class="flex items-center gap-2 text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-100 shadow-sm">
+        <div class="flex items-center gap-2 text-gray-600 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -44,13 +45,13 @@
             <h3 class="font-bold text-gray-900 text-sm md:text-base text-center">Izin / Cuti</h3>
         </a>
 
-        <a href="{{ route('admin.departments.index') }}" class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-blue-100 transition group hover:-translate-y-0.5">
+        <a href="{{ route('admin.positions.index') }}" class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-blue-100 transition group hover:-translate-y-0.5">
             <div class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-yellow-50 rounded-xl flex items-center justify-center text-yellow-600 mb-3 group-hover:scale-110 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
             </div>
-            <h3 class="font-bold text-gray-900 text-sm md:text-base text-center">Laporan</h3>
+            <h3 class="font-bold text-gray-900 text-sm md:text-base text-center">Posisi</h3>
         </a>
 
         <a href="{{ route('admin.shifts.index') }}" class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition group">

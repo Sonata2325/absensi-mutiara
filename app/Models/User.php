@@ -25,11 +25,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'nip',
         'phone',
-        'department_id',
+        'position_id',
         'shift_id',
-        'position',
         'tanggal_masuk',
         'status',
         'foto_profile',
@@ -60,9 +58,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function department(): BelongsTo
+    public function position(): BelongsTo
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Position::class);
     }
 
     public function shift(): BelongsTo

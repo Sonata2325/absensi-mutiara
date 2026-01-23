@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Department;
+use App\Models\Position;
 use App\Models\Shift;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 
 class AdminEmployeeController extends Controller
@@ -15,7 +16,7 @@ class AdminEmployeeController extends Controller
     {
         $employees = User::query()
             ->where('role', 'employee')
-            ->with(['department', 'shift'])
+            ->with(['position', 'shift'])
             ->orderBy('name')
             ->paginate(15);
 
@@ -24,22 +25,24 @@ class AdminEmployeeController extends Controller
 
     public function create()
     {
-        $departments = Department::query()->orderBy('nama_department')->get();
-        $shifts = Shift::query()->orderBy('nama_shift')->get();
+        $positions = Cache::remember('positions_all', 3600, function () {
+            return Position::query()->orderBy('nama_posisi')->get();
+        });
+        $shifts = Cache::remember('shifts_all', 3600, function () {
+            return Shift::query()->orderBy('nama_shift')->get();
+        });
 
-        return view('admin.employees.create', compact('departments', 'shifts'));
+        return view('admin.employees.create', compact('positions', 'shifts'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nip' => ['required', 'string', 'max:50', 'unique:users,nip'],
             'name' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:6'],
             'phone' => ['required', 'string', 'max:50', 'unique:users,phone'],
-            'department_id' => ['nullable', 'exists:departments,id'],
+            'position_id' => ['nullable', 'exists:positions,id'],
             'shift_id' => ['nullable', 'exists:shifts,id'],
-            'position' => ['nullable', 'string', 'max:255'],
             'tanggal_masuk' => ['nullable', 'date'],
             'status' => ['required', Rule::in(['aktif', 'nonaktif'])],
             'alamat' => ['nullable', 'string'],
@@ -57,7 +60,7 @@ class AdminEmployeeController extends Controller
     {
         abort_unless($employee->role === 'employee', 404);
 
-        $employee->load(['department', 'shift']);
+        $employee->load(['position', 'shift']);
 
         return view('admin.employees.show', compact('employee'));
     }
@@ -66,10 +69,14 @@ class AdminEmployeeController extends Controller
     {
         abort_unless($employee->role === 'employee', 404);
 
-        $departments = Department::query()->orderBy('nama_department')->get();
-        $shifts = Shift::query()->orderBy('nama_shift')->get();
+        $positions = Cache::remember('positions_all', 3600, function () {
+            return Position::query()->orderBy('nama_posisi')->get();
+        });
+        $shifts = Cache::remember('shifts_all', 3600, function () {
+            return Shift::query()->orderBy('nama_shift')->get();
+        });
 
-        return view('admin.employees.edit', compact('employee', 'departments', 'shifts'));
+        return view('admin.employees.edit', compact('employee', 'positions', 'shifts'));
     }
 
     public function update(Request $request, User $employee)
@@ -77,13 +84,11 @@ class AdminEmployeeController extends Controller
         abort_unless($employee->role === 'employee', 404);
 
         $data = $request->validate([
-            'nip' => ['required', 'string', 'max:50', Rule::unique('users', 'nip')->ignore($employee->id)],
             'name' => ['required', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:6'],
             'phone' => ['required', 'string', 'max:50', Rule::unique('users', 'phone')->ignore($employee->id)],
-            'department_id' => ['nullable', 'exists:departments,id'],
+            'position_id' => ['nullable', 'exists:positions,id'],
             'shift_id' => ['nullable', 'exists:shifts,id'],
-            'position' => ['nullable', 'string', 'max:255'],
             'tanggal_masuk' => ['nullable', 'date'],
             'status' => ['required', Rule::in(['aktif', 'nonaktif'])],
             'alamat' => ['nullable', 'string'],
@@ -105,6 +110,6 @@ class AdminEmployeeController extends Controller
 
         $employee->delete();
 
-        return redirect()->route('admin.karyawan.index')->with('status', 'Karyawan berhasil dihapus (soft delete).');
+        return redirect()->route('admin.karyawan.index')->with('status', 'Karyawan berhasil dihapus.');
     }
 }

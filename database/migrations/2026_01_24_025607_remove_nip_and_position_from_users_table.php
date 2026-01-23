@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Changes already applied in previous migrations to support SQLite
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['nip', 'position']);
+        });
     }
 
     /**
@@ -19,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('nip')->nullable()->unique()->after('role');
+            $table->string('position')->nullable()->after('shift_id');
+        });
     }
 };

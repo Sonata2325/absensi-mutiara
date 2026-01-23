@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>Sistem Absensi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Mobile-friendly touch targets */
@@ -13,49 +13,71 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen {{ request()->routeIs('login') ? '' : 'pb-20 md:pb-0' }}">
+<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen {{ request()->routeIs('login') ? '' : 'pt-16 pb-20 md:pb-0' }}">
     <!-- Header -->
     @unless(request()->routeIs('login'))
-    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+    <header class="bg-white border-b fixed top-0 left-0 right-0 z-50 shadow-sm">
         <div class="w-full px-4 h-16 flex items-center justify-between">
-            <div class="font-bold text-xl tracking-tight text-[#D61600]">
-                <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <img src="{{ asset('LOGO PT.Mutiara.jpeg') }}" alt="Logo" class="h-10 w-auto">
-                    <span>PT Mutiara Jaya Express</span>
+            <div class="font-bold text-lg md:text-xl tracking-tight text-[#D61600]">
+                <a href="{{ url('/') }}" class="flex items-center gap-2 md:gap-3">
+                    <img src="{{ asset('LOGO PT.Mutiara.jpeg') }}" alt="Logo" class="h-8 md:h-10 w-auto md:hidden">
+                    <span class="whitespace-nowrap">PT Mutiara Jaya Express</span>
                 </a>
             </div>
 
             <div class="flex items-center gap-6">
+                <!-- Mobile Logout Button -->
+                <div class="md:hidden">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-gray-500 hover:text-[#D61600] transition-colors p-2" onclick="return confirm('Yakin ingin keluar?')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Desktop Nav -->
                 <div class="hidden md:flex items-center gap-6 h-16">
                     @auth
-                        @if((auth()->user()->role ?? '') === 'admin')
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.karyawan.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.departments.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.departments.index') }}">Department</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.shifts.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.leave.index') }}">Izin</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.reports.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
-                            <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.settings.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
-                            <form method="POST" action="{{ route('logout') }}" class="flex items-center h-full">
+                        @unless(request()->routeIs('admin.dashboard') || request()->routeIs('karyawan.dashboard'))
+                            @if((auth()->user()->role ?? '') === 'admin')
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.karyawan.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.positions.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.positions.index') }}">Posisi</a>
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.shifts.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.leave.index') }}">Izin</a>
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.reports.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
+                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.settings.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
+                                <form method="POST" action="{{ route('logout') }}" class="flex items-center h-full">
+                                    @csrf
+                                    <button type="submit" class="flex items-center h-full border-b-2 border-transparent text-sm font-bold px-1 text-gray-500 hover:text-[#D61600] hover:border-gray-300" onclick="return confirm('Yakin ingin keluar?')">Keluar</button>
+                                </form>
+                            @else
+                                <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.dashboard') }}">Beranda</a>
+                                <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.attendance.index') }}">Absensi</a>
+                                <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.leave.index') }}">Izin</a>
+                                <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.profile.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.profile.edit') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="flex items-center h-full ml-2">
+                                    @csrf
+                                    <button type="submit" class="flex items-center justify-center h-10 w-10 rounded-full text-gray-500 hover:text-[#D61600] hover:bg-red-50 transition-colors" title="Keluar" onclick="return confirm('Yakin ingin keluar?')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                    </button>
+                                </form>
+                            @endif
+                        @else
+                            <!-- Show only logout on dashboard for desktop if needed, or nothing -->
+                             <form method="POST" action="{{ route('logout') }}" class="flex items-center h-full">
                                 @csrf
                                 <button type="submit" class="flex items-center h-full border-b-2 border-transparent text-sm font-bold px-1 text-gray-500 hover:text-[#D61600] hover:border-gray-300" onclick="return confirm('Yakin ingin keluar?')">Keluar</button>
                             </form>
-                        @else
-                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.dashboard') }}">Beranda</a>
-                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.attendance.index') }}">Absensi</a>
-                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.leave.index') }}">Izin</a>
-                            <a class="flex items-center h-full border-b-2 text-lg font-semibold px-1 {{ request()->routeIs('karyawan.profile.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-[#D61600]' }}" href="{{ route('karyawan.profile.edit') }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            </a>
-                            <form method="POST" action="{{ route('logout') }}" class="flex items-center h-full ml-2">
-                                @csrf
-                                <button type="submit" class="flex items-center justify-center h-10 w-10 rounded-full text-gray-500 hover:text-[#D61600] hover:bg-red-50 transition-colors" title="Keluar" onclick="return confirm('Yakin ingin keluar?')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                </button>
-                            </form>
-                        @endif
+                        @endunless
                     @endauth
                 </div>
             </div>
@@ -88,6 +110,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     <span class="text-[10px] font-medium mt-1">Set</span>
                 </a>
+                <form method="POST" action="{{ route('logout') }}" class="flex flex-col items-center p-2 text-gray-500">
+                    @csrf
+                    <button type="submit" class="flex flex-col items-center w-full" onclick="return confirm('Yakin ingin keluar?')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <span class="text-[10px] font-medium mt-1">Keluar</span>
+                    </button>
+                </form>
             @else
                 <a href="{{ route('karyawan.dashboard') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('karyawan.dashboard') ? 'text-blue-600' : 'text-gray-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -105,6 +134,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span class="text-[10px] font-medium mt-1">Profil</span>
                 </a>
+                <form method="POST" action="{{ route('logout') }}" class="flex flex-col items-center p-2 text-gray-500">
+                    @csrf
+                    <button type="submit" class="flex flex-col items-center w-full" onclick="return confirm('Yakin ingin keluar?')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <span class="text-[10px] font-medium mt-1">Keluar</span>
+                    </button>
+                </form>
             @endif
         </div>
     </nav>

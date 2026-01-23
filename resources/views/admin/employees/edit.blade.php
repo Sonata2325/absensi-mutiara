@@ -9,11 +9,6 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label class="text-sm font-medium">NIP</label>
-            <input name="nip" value="{{ old('nip', $employee->nip) }}" class="mt-1 w-full border rounded-lg px-3 py-2" required>
-            @error('nip')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
-        </div>
-        <div>
             <label class="text-sm font-medium">Nama</label>
             <input name="name" value="{{ old('name', $employee->name) }}" class="mt-1 w-full border rounded-lg px-3 py-2" required>
             @error('name')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
@@ -30,19 +25,14 @@
         </div>
 
         <div>
-            <label class="text-sm font-medium">Position</label>
-            <input name="position" value="{{ old('position', $employee->position) }}" class="mt-1 w-full border rounded-lg px-3 py-2">
-            @error('position')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
-        </div>
-        <div>
-            <label class="text-sm font-medium">Department</label>
-            <select name="department_id" class="mt-1 w-full border rounded-lg px-3 py-2">
+            <label class="text-sm font-medium">Posisi</label>
+            <select name="position_id" class="mt-1 w-full border rounded-lg px-3 py-2">
                 <option value="">-</option>
-                @foreach($departments as $d)
-                    <option value="{{ $d->id }}" @selected(old('department_id', $employee->department_id) == $d->id)>{{ $d->nama_department }}</option>
+                @foreach($positions as $p)
+                    <option value="{{ $p->id }}" @selected(old('position_id', $employee->position_id) == $p->id)>{{ $p->nama_posisi }}</option>
                 @endforeach
             </select>
-            @error('department_id')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
+            @error('position_id')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
         </div>
         <div>
             <label class="text-sm font-medium">Shift</label>
@@ -87,4 +77,3 @@
     </div>
 </form>
 @endsection
-

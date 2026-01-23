@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Karyawan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Validation\Rule;
 
@@ -30,7 +31,11 @@ class KaryawanProfileController extends Controller
         ]);
 
         if ($request->hasFile('foto_profile')) {
+            $oldPath = $user->foto_profile;
             $data['foto_profile'] = $request->file('foto_profile')->store('profile', 'public');
+            if ($oldPath && Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
         } else {
             unset($data['foto_profile']);
         }

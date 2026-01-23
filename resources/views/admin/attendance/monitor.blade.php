@@ -24,9 +24,8 @@
         <table class="min-w-full text-sm">
             <thead class="bg-gray-50 text-left text-xs uppercase tracking-wider text-gray-500">
                 <tr>
-                    <th class="p-3">NIP</th>
                     <th class="p-3">Nama</th>
-                    <th class="p-3">Department</th>
+                    <th class="p-3">Posisi</th>
                     <th class="p-3">Shift</th>
                     <th class="p-3">Status Hari Ini</th>
                     <th class="p-3">Jam Masuk</th>
@@ -43,9 +42,8 @@
                         $status = $lv ? 'izin' : ($att?->status ?? 'belum absen');
                     @endphp
                     <tr class="border-t hover:bg-gray-50">
-                        <td class="p-3">{{ $e->nip }}</td>
                         <td class="p-3">{{ $e->name }}</td>
-                        <td class="p-3">{{ $e->department?->nama_department }}</td>
+                        <td class="p-3">{{ $e->position?->nama_posisi }}</td>
                         <td class="p-3">{{ $e->shift?->nama_shift }}</td>
                         <td class="p-3">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
