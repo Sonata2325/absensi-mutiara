@@ -35,7 +35,7 @@
             <h3 class="font-bold text-gray-900 text-sm md:text-base text-center">Karyawan</h3>
         </a>
 
-        <a href="{{ route('admin.shifts.index') }}" class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-blue-100 transition group hover:-translate-y-0.5">
+        <a href="{{ route('admin.leave.index') }}" class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-blue-100 transition group hover:-translate-y-0.5">
             <div class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 mb-3 group-hover:scale-110 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
