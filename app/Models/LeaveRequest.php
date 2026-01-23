@@ -14,6 +14,7 @@ class LeaveRequest extends Model
         'tanggal_selesai',
         'alasan',
         'dokumen_pendukung',
+        'signature',
         'status',
         'approved_by',
         'approval_date',

@@ -4,10 +4,10 @@
 <div class="max-w-md mx-auto space-y-8">
     <!-- Header Section -->
     <div class="text-center pt-4">
-        <h1 id="realtime-clock" class="text-4xl font-bold text-[#D61600] tracking-tight mb-2">{{ now()->format('H:i:s') }}</h1>
+        <h1 id="live-clock" class="text-4xl font-bold text-[#D61600] tracking-tight mb-2">{{ now()->format('H:i:s') }}</h1>
         <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D61600]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            <span id="realtime-date" class="text-sm font-medium text-[#D61600]">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
+            <span class="text-sm font-medium text-[#D61600]">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
         </div>
     </div>
 
@@ -20,7 +20,7 @@
             </div>
             <div class="text-center">
                 <span class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Jam Masuk</span>
-                <span class="block text-xl font-bold text-gray-800">{{ $attendance?->jam_masuk ?? '--:--' }}</span>
+                <span class="block text-xl font-bold text-gray-800">{{ $attendance?->jam_masuk ?? '--:--:--' }}</span>
             </div>
         </div>
 
@@ -31,7 +31,7 @@
             </div>
             <div class="text-center">
                 <span class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Jam Keluar</span>
-                <span class="block text-xl font-bold text-gray-800">{{ $attendance?->jam_keluar ?? '--:--' }}</span>
+                <span class="block text-xl font-bold text-gray-800">{{ $attendance?->jam_keluar ?? '--:--:--' }}</span>
             </div>
         </div>
     </div>
@@ -91,14 +91,6 @@
             </div>
         @endif
     </div>
-
-    <!-- Location Info -->
-    <div class="flex justify-center">
-        <div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full border border-gray-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            <span class="text-xs text-gray-500 font-medium">Lat: {{ $settings['office_lat'] ?? '-' }} • Lng: {{ $settings['office_lng'] ?? '-' }}</span>
-        </div>
-    </div>
 </div>
 
 <!-- Fullscreen Camera Modal -->
@@ -118,7 +110,7 @@
     <div class="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
         <video id="video-feed" autoplay playsinline class="w-full h-full object-cover"></video>
         <canvas id="canvas-process" class="hidden"></canvas>
-        <img id="photo-preview" class="hidden w-full h-full object-contain absolute inset-0 z-20 bg-black">
+        <img id="photo-preview" class="hidden w-full h-full object-cover absolute inset-0 z-20">
         
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="absolute inset-0 z-30 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center hidden">
@@ -159,6 +151,17 @@
 </div>
 
 <script>
+    // Real-time Clock
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('live-clock').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
+
     let currentStream = null;
     let facingMode = 'user';
     let currentType = 'in'; // 'in' or 'out'
@@ -228,70 +231,17 @@
         const canvas = document.getElementById('canvas-process');
         const photoPreview = document.getElementById('photo-preview');
         
-        // Logic 3:4 Crop
-        const videoWidth = video.videoWidth;
-        const videoHeight = video.videoHeight;
+        // Set canvas size to match video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         
-        let cropWidth, cropHeight, startX, startY;
-        const targetRatio = 3/4;
-        const videoRatio = videoWidth / videoHeight;
-        
-        if (videoRatio > targetRatio) {
-            // Video wider than 3:4 (e.g. 16:9) -> Crop width
-            cropHeight = videoHeight;
-            cropWidth = cropHeight * targetRatio;
-            startX = (videoWidth - cropWidth) / 2;
-            startY = 0;
-        } else {
-            // Video taller -> Crop height
-            cropWidth = videoWidth;
-            cropHeight = cropWidth / targetRatio;
-            startX = 0;
-            startY = (videoHeight - cropHeight) / 2;
-        }
-        
-        // Set canvas to cropped size
-        canvas.width = cropWidth;
-        canvas.height = cropHeight;
-        
+        // Draw video frame to canvas
         const ctx = canvas.getContext('2d');
-        
-        // Flip if user facing
         if (facingMode === 'user') {
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
         }
-        
-        // Draw cropped video
-        ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
-        
-        // Reset transform for text
-        if (facingMode === 'user') {
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-        }
-        
-        // Add Watermark
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(/\./g, ':');
-        
-        // Gradient bg for text
-        const gradient = ctx.createLinearGradient(0, canvas.height - 120, 0, canvas.height);
-        gradient.addColorStop(0, "transparent");
-        gradient.addColorStop(1, "rgba(0,0,0,0.8)");
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, canvas.height - 120, canvas.width, 120);
-        
-        // Text drawing
-        ctx.fillStyle = "white";
-        ctx.shadowColor = "black";
-        ctx.shadowBlur = 4;
-        
-        ctx.font = "bold 32px sans-serif";
-        ctx.fillText(timeStr, 20, canvas.height - 70);
-        
-        ctx.font = "16px sans-serif";
-        ctx.fillText(dateStr, 20, canvas.height - 40);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
         // Show preview
         photoPreview.src = canvas.toDataURL('image/jpeg');
@@ -339,26 +289,5 @@
         document.getElementById('preview-actions').classList.add('hidden');
         document.getElementById('loading-overlay').classList.add('hidden');
     }
-
-    // Realtime Clock Logic
-    function updateRealtimeClock() {
-        const now = new Date();
-        const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-        const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        
-        // Ensure format HH:MM:SS
-        const timeString = now.toLocaleTimeString('id-ID', optionsTime).replace(/\./g, ':');
-        const dateString = now.toLocaleDateString('id-ID', optionsDate);
-        
-        const clockEl = document.getElementById('realtime-clock');
-        const dateEl = document.getElementById('realtime-date');
-        
-        if (clockEl) clockEl.innerText = timeString;
-        if (dateEl) dateEl.innerText = dateString;
-    }
-    
-    // Start clock
-    setInterval(updateRealtimeClock, 1000);
-    updateRealtimeClock();
 </script>
 @endsection
