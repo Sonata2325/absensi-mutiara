@@ -14,10 +14,12 @@ class Shift extends Model
         'toleransi_terlambat',
         'deskripsi',
         'is_active',
+        'is_flexible',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_flexible' => 'boolean',
     ];
 
     public function employees(): HasMany

@@ -32,7 +32,7 @@ class KaryawanProfileController extends Controller
 
         if ($request->hasFile('foto_profile')) {
             $oldPath = $user->foto_profile;
-            $data['foto_profile'] = $request->file('foto_profile')->store('profile', 'public');
+            $data['foto_profile'] = $this->storeCompressedImage($request->file('foto_profile'), 'profile', 85, 800);
             if ($oldPath && Storage::disk('public')->exists($oldPath)) {
                 Storage::disk('public')->delete($oldPath);
             }
@@ -43,6 +43,59 @@ class KaryawanProfileController extends Controller
         $user->update($data);
 
         return back()->with('status', 'Profile berhasil diupdate.');
+    }
+
+    private function storeCompressedImage($file, string $folder, int $quality, int $maxWidth): ?string
+    {
+        if (! function_exists('imagecreatefromjpeg')) {
+            return $file->store($folder, 'public');
+        }
+
+        $mime = (string) $file->getMimeType();
+        if (! in_array($mime, ['image/jpeg', 'image/png'], true)) {
+            return $file->store($folder, 'public');
+        }
+
+        $sourcePath = $file->getRealPath();
+        if (! $sourcePath) {
+            return $file->store($folder, 'public');
+        }
+
+        $image = $mime === 'image/png'
+            ? @imagecreatefrompng($sourcePath)
+            : @imagecreatefromjpeg($sourcePath);
+
+        if (! $image) {
+            return $file->store($folder, 'public');
+        }
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $newWidth = $width;
+        $newHeight = $height;
+
+        if ($width > $maxWidth) {
+            $ratio = $maxWidth / $width;
+            $newWidth = $maxWidth;
+            $newHeight = (int) round($height * $ratio);
+        }
+
+        $canvas = imagecreatetruecolor($newWidth, $newHeight);
+        $white = imagecolorallocate($canvas, 255, 255, 255);
+        imagefill($canvas, 0, 0, $white);
+        imagecopyresampled($canvas, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        $dir = $folder.'/'.now()->format('Y/m');
+        Storage::disk('public')->makeDirectory($dir);
+        $filename = now()->format('YmdHis').'-'.bin2hex(random_bytes(6)).'.jpg';
+        $path = $dir.'/'.$filename;
+        $fullPath = Storage::disk('public')->path($path);
+
+        imagejpeg($canvas, $fullPath, $quality);
+        imagedestroy($canvas);
+        imagedestroy($image);
+
+        return $path;
     }
 
     public function updatePassword(Request $request)

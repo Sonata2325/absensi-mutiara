@@ -9,6 +9,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class KaryawanAttendanceController extends Controller
 {
@@ -66,7 +67,10 @@ class KaryawanAttendanceController extends Controller
             'foto_masuk' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:4096'],
         ]);
 
-        if (! $this->isWithinOffice((float) $data['lat'], (float) $data['lng'])) {
+        $shift = $user->shift;
+        $isFlexible = $shift && $shift->is_flexible;
+
+        if (! $isFlexible && ! $this->isWithinOffice((float) $data['lat'], (float) $data['lng'])) {
             return back()->with('status', 'Lokasi di luar radius kantor.');
         }
 
@@ -81,7 +85,7 @@ class KaryawanAttendanceController extends Controller
 
         $fotoPath = null;
         if ($request->hasFile('foto_masuk')) {
-            $fotoPath = $request->file('foto_masuk')->store('absensi', 'public');
+            $fotoPath = $this->storeCompressedImage($request->file('foto_masuk'), 'absensi', 75, 1080);
         }
 
         $status = $this->resolveClockInStatus($user, now());
@@ -120,7 +124,10 @@ class KaryawanAttendanceController extends Controller
             'foto_keluar' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:4096'],
         ]);
 
-        if (! $this->isWithinOffice((float) $data['lat'], (float) $data['lng'])) {
+        $shift = $user->shift;
+        $isFlexible = $shift && $shift->is_flexible;
+
+        if (! $isFlexible && ! $this->isWithinOffice((float) $data['lat'], (float) $data['lng'])) {
             return back()->with('status', 'Lokasi di luar radius kantor.');
         }
 
@@ -139,7 +146,7 @@ class KaryawanAttendanceController extends Controller
 
         $fotoPath = null;
         if ($request->hasFile('foto_keluar')) {
-            $fotoPath = $request->file('foto_keluar')->store('absensi', 'public');
+            $fotoPath = $this->storeCompressedImage($request->file('foto_keluar'), 'absensi', 75, 1080);
         }
 
         $attendance->update([
@@ -211,6 +218,11 @@ class KaryawanAttendanceController extends Controller
     private function resolveClockInStatus($user, Carbon $now): string
     {
         $shift = $user->shift;
+
+        if ($shift && $shift->is_flexible) {
+            return 'hadir';
+        }
+
         if ($shift && $shift->jam_masuk) {
             $toleransi = (int) ($shift->toleransi_terlambat ?? 0);
             $limit = Carbon::parse($now->toDateString().' '.$shift->jam_masuk)->addMinutes($toleransi);
@@ -223,6 +235,59 @@ class KaryawanAttendanceController extends Controller
         $limit = Carbon::parse($now->toDateString().' '.$startTime)->addMinutes($tolerance);
 
         return $now->lessThanOrEqualTo($limit) ? 'hadir' : 'terlambat';
+    }
+
+    private function storeCompressedImage($file, string $folder, int $quality, int $maxWidth): ?string
+    {
+        if (! function_exists('imagecreatefromjpeg')) {
+            return $file->store($folder, 'public');
+        }
+
+        $mime = (string) $file->getMimeType();
+        if (! in_array($mime, ['image/jpeg', 'image/png'], true)) {
+            return $file->store($folder, 'public');
+        }
+
+        $sourcePath = $file->getRealPath();
+        if (! $sourcePath) {
+            return $file->store($folder, 'public');
+        }
+
+        $image = $mime === 'image/png'
+            ? @imagecreatefrompng($sourcePath)
+            : @imagecreatefromjpeg($sourcePath);
+
+        if (! $image) {
+            return $file->store($folder, 'public');
+        }
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $newWidth = $width;
+        $newHeight = $height;
+
+        if ($width > $maxWidth) {
+            $ratio = $maxWidth / $width;
+            $newWidth = $maxWidth;
+            $newHeight = (int) round($height * $ratio);
+        }
+
+        $canvas = imagecreatetruecolor($newWidth, $newHeight);
+        $white = imagecolorallocate($canvas, 255, 255, 255);
+        imagefill($canvas, 0, 0, $white);
+        imagecopyresampled($canvas, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        $dir = $folder.'/'.now()->format('Y/m');
+        Storage::disk('public')->makeDirectory($dir);
+        $filename = now()->format('YmdHis').'-'.bin2hex(random_bytes(6)).'.jpg';
+        $path = $dir.'/'.$filename;
+        $fullPath = Storage::disk('public')->path($path);
+
+        imagejpeg($canvas, $fullPath, $quality);
+        imagedestroy($canvas);
+        imagedestroy($image);
+
+        return $path;
     }
 
     private function isWithinOffice(float $lat, float $lng): bool

@@ -1,6 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Skeleton Loader to prevent CLS -->
+<div id="skeletonLoader">
+    <style>
+        .skeleton-loader { width: 100%; padding: 20px; }
+        .skeleton-header { height: 40px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; margin-bottom: 24px; width: 300px; }
+        .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .skeleton-card-sm { height: 100px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 16px; }
+        .skeleton-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .skeleton-card-lg { height: 120px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 16px; }
+        .skeleton-chart { height: 350px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 16px; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    </style>
+    <div class="skeleton-loader">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-grid">
+            <div class="skeleton-card-sm"></div>
+            <div class="skeleton-card-sm"></div>
+            <div class="skeleton-card-sm"></div>
+            <div class="skeleton-card-sm"></div>
+            <div class="skeleton-card-sm"></div>
+            <div class="skeleton-card-sm"></div>
+        </div>
+        <div class="skeleton-stats">
+            <div class="skeleton-card-lg"></div>
+            <div class="skeleton-card-lg"></div>
+            <div class="skeleton-card-lg"></div>
+            <div class="skeleton-card-lg"></div>
+        </div>
+        <div class="skeleton-chart"></div>
+    </div>
+</div>
+
+<div id="dashboardContent" style="display: none;">
 <div class="flex flex-col gap-6">
     <!-- Header Section -->
     <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
@@ -143,6 +176,32 @@
         </div>
     </div>
 </div>
+</div>
+
+<!-- Script to handle Skeleton Loader -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to switch view
+        function hideSkeleton() {
+            const skeleton = document.getElementById('skeletonLoader');
+            const content = document.getElementById('dashboardContent');
+            
+            if (skeleton && content && skeleton.style.display !== 'none') {
+                skeleton.style.display = 'none';
+                content.style.display = 'block';
+                
+                // Trigger chart resize to ensure it renders correctly after being hidden
+                window.dispatchEvent(new Event('resize'));
+            }
+        }
+
+        // Show content when fully loaded
+        window.addEventListener('load', hideSkeleton);
+        
+        // Fallback: Force show content after 2 seconds max (in case of hanging resources)
+        setTimeout(hideSkeleton, 2000);
+    });
+</script>
 
 <style>
     .custom-scrollbar::-webkit-scrollbar {
@@ -223,7 +282,15 @@
             yaxis: {
                 title: {
                     text: 'Jumlah Karyawan'
-                }
+                },
+                labels: {
+                    formatter: function (value) {
+                        return value.toFixed(0);
+                    }
+                },
+                forceNiceScale: true,
+                min: 0,
+                decimalsInFloat: 0
             },
             fill: {
                 opacity: 1

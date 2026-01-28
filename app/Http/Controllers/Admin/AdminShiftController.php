@@ -23,17 +23,26 @@ class AdminShiftController extends Controller
 
     public function store(Request $request)
     {
+        $isFlexible = $request->boolean('is_flexible');
+
         $data = $request->validate([
             'nama_shift' => ['required', 'string', 'max:255'],
-            'jam_masuk' => ['required'],
-            'jam_keluar' => ['required'],
+            'jam_masuk' => $isFlexible ? ['nullable'] : ['required'],
+            'jam_keluar' => $isFlexible ? ['nullable'] : ['required'],
             'toleransi_terlambat' => ['nullable', 'integer', 'min:0'],
             'deskripsi' => ['nullable', 'string'],
             'is_active' => ['nullable', 'boolean'],
+            'is_flexible' => ['nullable', 'boolean'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_flexible'] = $isFlexible;
         $data['toleransi_terlambat'] = (int) ($data['toleransi_terlambat'] ?? 0);
+
+        if ($isFlexible) {
+            $data['jam_masuk'] = null;
+            $data['jam_keluar'] = null;
+        }
 
         Shift::create($data);
         Cache::forget('shifts_all');
@@ -48,17 +57,26 @@ class AdminShiftController extends Controller
 
     public function update(Request $request, Shift $shift)
     {
+        $isFlexible = $request->boolean('is_flexible');
+
         $data = $request->validate([
             'nama_shift' => ['required', 'string', 'max:255'],
-            'jam_masuk' => ['required'],
-            'jam_keluar' => ['required'],
+            'jam_masuk' => $isFlexible ? ['nullable'] : ['required'],
+            'jam_keluar' => $isFlexible ? ['nullable'] : ['required'],
             'toleransi_terlambat' => ['nullable', 'integer', 'min:0'],
             'deskripsi' => ['nullable', 'string'],
             'is_active' => ['nullable', 'boolean'],
+            'is_flexible' => ['nullable', 'boolean'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_flexible'] = $isFlexible;
         $data['toleransi_terlambat'] = (int) ($data['toleransi_terlambat'] ?? 0);
+
+        if ($isFlexible) {
+            $data['jam_masuk'] = null;
+            $data['jam_keluar'] = null;
+        }
 
         $shift->update($data);
         Cache::forget('shifts_all');
