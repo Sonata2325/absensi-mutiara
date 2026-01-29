@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>Sistem Absensi</title>
+    <link rel="icon" href="{{ asset('logo_pt_mutiara.png') }}" type="image/png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -17,7 +18,7 @@
     <!-- Header -->
     @unless(request()->routeIs('login'))
     <header class="bg-white border-b fixed top-0 left-0 right-0 z-50 shadow-sm">
-        <div class="w-full px-4 h-16 flex items-center justify-between">
+        <div class="w-full px-4 sm:px-6 md:px-12 h-16 flex items-center justify-between">
             <div class="font-bold text-lg md:text-xl tracking-tight text-[#D61600]">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 md:gap-3">
                     <img src="{{ asset('LOGO PT.Mutiara.jpeg') }}" alt="Logo" class="h-8 md:h-10 w-auto md:hidden">
@@ -46,13 +47,34 @@
                         @unless(request()->routeIs('admin.dashboard') || request()->routeIs('karyawan.dashboard'))
                             @if((auth()->user()->role ?? '') === 'admin')
                                 <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.dashboard') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.karyawan.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
-                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.positions.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.positions.index') }}">Posisi</a>
-                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.shifts.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.shifts.index') }}">Shift</a>
-                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.attendance.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
-                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.leave.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.leave.index') }}">Izin</a>
-                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.reports.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.reports.index') }}">Laporan</a>
-                                <a class="flex items-center h-full border-b-2 text-sm font-bold px-1 {{ request()->routeIs('admin.settings.*') ? 'border-[#D61600] text-[#D61600]' : 'border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300' }}" href="{{ route('admin.settings.edit') }}">Settings</a>
+                                
+                                @php
+                                    $isKelolaActive = request()->routeIs('admin.karyawan.*') ||
+                                                      request()->routeIs('admin.positions.*') ||
+                                                      request()->routeIs('admin.shifts.*') ||
+                                                      request()->routeIs('admin.attendance.*') ||
+                                                      request()->routeIs('admin.leave.*') ||
+                                                      request()->routeIs('admin.reports.*') ||
+                                                      request()->routeIs('admin.settings.*');
+                                @endphp
+                                
+                                <div id="kelolaWrapper" class="relative h-full flex items-center group">
+                                    <button id="kelolaBtn" class="flex items-center gap-1 h-full border-b-2 text-sm font-bold px-1 border-transparent text-gray-500 hover:text-[#D61600] hover:border-gray-300">
+                                        Kelola
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </button>
+                                    <div id="kelolaMenu" class="absolute top-full left-1/2 -translate-x-1/2 -translate-x-[10px] mt-1 min-w-[120px] bg-white shadow-lg rounded-md border border-gray-100 hidden py-1 z-[100]">
+                                        <a class="block px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D61600]" href="{{ route('admin.karyawan.index') }}">Karyawan</a>
+                                        <a class="block px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D61600]" href="{{ route('admin.positions.index') }}">Posisi</a>
+                                        <a class="block px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D61600]" href="{{ route('admin.shifts.index') }}">Shift</a>
+                                        <a class="block px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D61600]" href="{{ route('admin.attendance.monitor') }}">Monitor</a>
+                                        <a class="block px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D61600]" href="{{ route('admin.leave.index') }}">Izin</a>
+                                        <a class="block px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D61600]" href="{{ route('admin.reports.index') }}">Laporan</a>
+                                        <div class="border-t my-1"></div>
+                                        <a class="block px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D61600]" href="{{ route('admin.settings.edit') }}">Settings</a>
+                                    </div>
+                                </div>
+
                                 <form method="POST" action="{{ route('logout') }}" class="flex items-center h-full">
                                     @csrf
                                     <button type="submit" class="flex items-center h-full border-b-2 border-transparent text-sm font-bold px-1 text-gray-500 hover:text-[#D61600] hover:border-gray-300" onclick="return confirm('Yakin ingin keluar?')">Keluar</button>
@@ -148,7 +170,7 @@
 
     @endauth
 
-    <main class="{{ request()->routeIs('login') ? 'w-full' : 'max-w-6xl mx-auto px-4 py-6 md:py-8' }}">
+    <main class="{{ request()->routeIs('login') ? 'w-full' : 'max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-10' }}">
         @if (session('status'))
             <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -178,6 +200,27 @@
                             document.getElementById('logout-form').submit();
                         }
                     });
+                });
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const kelolaWrapper = document.getElementById('kelolaWrapper');
+            const kelolaBtn = document.getElementById('kelolaBtn');
+            const kelolaMenu = document.getElementById('kelolaMenu');
+            
+            if (kelolaWrapper && kelolaBtn && kelolaMenu) {
+                kelolaWrapper.addEventListener('mouseenter', function() {
+                    kelolaMenu.classList.remove('hidden');
+                });
+
+                kelolaWrapper.addEventListener('mouseleave', function() {
+                    kelolaMenu.classList.add('hidden');
+                });
+
+                kelolaBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
                 });
             }
         });

@@ -8,7 +8,7 @@
 
     <div class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
         <div class="text-center mb-8">
-            <img src="{{ asset('logopt mutiara.png') }}" alt="Logo" class="mx-auto h-32 w-auto">
+            <img src="{{ asset('logo_pt_mutiara.png') }}" alt="Logo" class="mx-auto h-32 w-auto">
             <h2 class="mt-2 text-2xl font-bold text-black">PT Mutiara Jaya Express</h2>
         </div>
 

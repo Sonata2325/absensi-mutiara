@@ -26,9 +26,6 @@ class AdminSettingsController extends Controller
     public function update(Request $request)
     {
         $data = $request->validate([
-            'work_start_time' => ['required', 'string'],
-            'work_end_time' => ['required', 'string'],
-            'late_tolerance_minutes' => ['required', 'integer', 'min:0'],
             'office_lat' => ['nullable', 'numeric'],
             'office_lng' => ['nullable', 'numeric'],
             'office_radius_meters' => ['required', 'integer', 'min:1'],
