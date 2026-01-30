@@ -18,10 +18,27 @@ class KaryawanAttendanceController extends Controller
         $user = $request->user();
         $today = now()->toDateString();
 
+        $yesterday = now()->subDay()->toDateString();
+        $attendanceYesterday = Attendance::query()
+            ->where('employee_id', $user->id)
+            ->whereDate('tanggal', $yesterday)
+            ->first();
+        if ($attendanceYesterday && $attendanceYesterday->jam_masuk && ! $attendanceYesterday->jam_keluar) {
+            $endTime = $attendanceYesterday->status === 'overtime' ? '22:00:00' : '23:59:59';
+            $attendanceYesterday->update(['jam_keluar' => $endTime]);
+        }
+
         $attendance = Attendance::query()
             ->where('employee_id', $user->id)
             ->whereDate('tanggal', $today)
             ->first();
+
+        if ($attendance && $attendance->status === 'overtime' && ! $attendance->jam_keluar) {
+            $limit = \Illuminate\Support\Carbon::parse($today.' 22:00');
+            if (now()->greaterThanOrEqualTo($limit)) {
+                $attendance->update(['jam_keluar' => '22:00:00']);
+            }
+        }
 
         $leaveToday = LeaveRequest::query()
             ->where('employee_id', $user->id)
@@ -144,6 +161,10 @@ class KaryawanAttendanceController extends Controller
             return back()->with('status', 'Kamu sudah clock out hari ini.');
         }
 
+        if (\Illuminate\Support\Carbon::parse($today)->isWeekend() && ($attendance->status !== 'overtime')) {
+            return back()->with('status', 'Weekend over time: klik tombol Over Time terlebih dahulu.');
+        }
+
         $fotoPath = null;
         if ($request->hasFile('foto_keluar')) {
             $fotoPath = $this->storeCompressedImage($request->file('foto_keluar'), 'absensi', 75, 1080);
@@ -157,6 +178,60 @@ class KaryawanAttendanceController extends Controller
         ]);
 
         return back()->with('status', 'Clock out berhasil.');
+    }
+
+    public function overtimeStart(Request $request)
+    {
+        $user = $request->user();
+        $today = now()->toDateString();
+
+        $leaveToday = LeaveRequest::query()
+            ->where('employee_id', $user->id)
+            ->where('status', 'approved')
+            ->whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->exists();
+
+        if ($leaveToday) {
+            return back()->with('status', 'Kamu sedang izin hari ini, tidak bisa over time.');
+        }
+
+        $attendance = Attendance::query()
+            ->where('employee_id', $user->id)
+            ->whereDate('tanggal', $today)
+            ->first();
+
+        if (! $attendance || ! $attendance->jam_masuk) {
+            return back()->with('status', 'Hanya bisa klik tombol over time setelah clock in.');
+        }
+
+        if ($attendance->jam_keluar) {
+            return back()->with('status', 'Kamu sudah clock out hari ini.');
+        }
+
+        if (($attendance->status ?? '') === 'overtime') {
+            return back()->with('status', 'Over time sudah dimulai.');
+        }
+
+        $now = now();
+        if ($now->isWeekend()) {
+            $start = \Illuminate\Support\Carbon::parse($now->toDateString().' 07:00');
+            if ($now->lessThan($start)) {
+                return back()->with('status', 'Over time belum dimulai');
+            }
+        } else {
+            $start = \Illuminate\Support\Carbon::parse($now->toDateString().' 18:50');
+            if ($now->lessThan($start)) {
+                return back()->with('status', 'Over time mulai jam 7.00 malam');
+            }
+        }
+
+        $attendance->update([
+            'status' => 'overtime',
+            'keterangan' => trim((string) ($attendance->keterangan ? $attendance->keterangan.' ' : '').'Over Time mulai '.now()->format('H:i')),
+        ]);
+
+        return back()->with('status', 'Over time dimulai.');
     }
 
     public function history(Request $request)
@@ -192,25 +267,71 @@ class KaryawanAttendanceController extends Controller
             ->orderBy('tanggal')
             ->get();
 
-        $filename = "slip-kehadiran-{$year}-".str_pad((string) $month, 2, '0', STR_PAD_LEFT).'.csv';
+        $filename = "slip-kehadiran-{$year}-".str_pad((string) $month, 2, '0', STR_PAD_LEFT).'.xls';
 
-        $handle = fopen('php://temp', 'r+');
-        fputcsv($handle, ['Tanggal', 'Jam Masuk', 'Jam Keluar', 'Status', 'Keterangan']);
+        $monthName = Carbon::createFromDate($year, $month, 1)->translatedFormat('F Y');
+
+        $html = '
+        <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <style>
+                table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
+                th, td { border: 1px solid #000000; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; font-weight: bold; }
+                .title { font-size: 16px; font-weight: bold; margin-bottom: 20px; text-align: center; }
+                .info { margin-bottom: 15px; }
+            </style>
+        </head>
+        <body>
+            <div class="title">SLIP KEHADIRAN KARYAWAN</div>
+            <div class="info">
+                <table>
+                    <tr>
+                        <td style="border:none; width: 150px;">Nama Karyawan</td>
+                        <td style="border:none;">: ' . htmlspecialchars($user->name) . '</td>
+                    </tr>
+                    <tr>
+                        <td style="border:none;">Periode</td>
+                        <td style="border:none;">: ' . htmlspecialchars($monthName) . '</td>
+                    </tr>
+                    <tr>
+                        <td style="border:none;">Perusahaan</td>
+                        <td style="border:none;">: PT Mutiara Jaya Express</td>
+                    </tr>
+                </table>
+            </div>
+            <br>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="background-color: #D61600; color: white;">Tanggal</th>
+                        <th style="background-color: #D61600; color: white;">Jam Masuk</th>
+                        <th style="background-color: #D61600; color: white;">Jam Keluar</th>
+                        <th style="background-color: #D61600; color: white;">Status</th>
+                        <th style="background-color: #D61600; color: white;">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>';
+
         foreach ($rows as $row) {
-            fputcsv($handle, [
-                (string) $row->tanggal?->toDateString(),
-                (string) ($row->jam_masuk ?? ''),
-                (string) ($row->jam_keluar ?? ''),
-                (string) ($row->status ?? ''),
-                (string) ($row->keterangan ?? ''),
-            ]);
+            $html .= '<tr>
+                <td>' . ($row->tanggal ? $row->tanggal->translatedFormat('d F Y') : '-') . '</td>
+                <td>' . ($row->jam_masuk ?? '-') . '</td>
+                <td>' . ($row->jam_keluar ?? '-') . '</td>
+                <td>' . ucfirst($row->status ?? '-') . '</td>
+                <td>' . ($row->keterangan ?? '-') . '</td>
+            </tr>';
         }
-        rewind($handle);
-        $csv = stream_get_contents($handle);
-        fclose($handle);
 
-        return response($csv, 200, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
+        $html .= '
+                </tbody>
+            </table>
+        </body>
+        </html>';
+
+        return response($html, 200, [
+            'Content-Type' => 'application/vnd.ms-excel',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
     }

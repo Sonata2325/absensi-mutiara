@@ -26,17 +26,24 @@
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-700 ml-1">Jenis Pengajuan</label>
                     <div class="relative">
-                        <select id="tipe-select" name="tipe" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 appearance-none cursor-pointer transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateDokumenLabel()">
+                        <select id="tipe-select" name="tipe" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 appearance-none cursor-pointer transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateDynamicFields()">
                             <option value="sakit" @selected(old('tipe') === 'sakit')>Sakit</option>
                             <option value="cuti_tahunan" @selected(old('tipe') === 'cuti_tahunan')>Cuti Tahunan</option>
                             <option value="melahirkan" @selected(old('tipe') === 'melahirkan')>Melahirkan</option>
                             <option value="menikah" @selected(old('tipe') === 'menikah')>Menikah</option>
                             <option value="duka_keluarga_inti" @selected(old('tipe') === 'duka_keluarga_inti')>Duka Keluarga Inti</option>
                             <option value="duka_bukan_keluarga_inti" @selected(old('tipe') === 'duka_bukan_keluarga_inti')>Duka Bukan Keluarga Inti</option>
+                            <option value="ulang_tahun" @selected(old('tipe') === 'ulang_tahun')>Ulang Tahun</option>
+                            <option value="idul_fitri" @selected(old('tipe') === 'idul_fitri')>Idul Fitri</option>
+                            <option value="tahun_baru" @selected(old('tipe') === 'tahun_baru')>Tahun Baru</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
+                    </div>
+                    <!-- Info Quota -->
+                    <div id="quota-info" class="hidden mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-700">
+                        Sisa Kuota Cuti Tahunan: <span class="font-bold text-lg">{{ $remainingQuota }}</span> hari
                     </div>
                     @error('tipe')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
                 </div>
@@ -56,16 +63,24 @@
                 </div>
             </div>
 
-            <!-- Tanggal -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Tanggal Acuan (Melahirkan) -->
+            <div id="acuan-block" class="space-y-2 hidden">
+                <label class="text-sm font-semibold text-gray-700 ml-1">Tanggal Acuan</label>
+                <input name="tanggal_acuan" id="tanggal_acuan" type="date" value="{{ old('tanggal_acuan') }}" min="{{ now()->toDateString() }}" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors hover:bg-gray-100 hover:border-[#D61600]" onchange="updateDynamicFields()">
+                <div class="text-xs text-gray-500 ml-1">Untuk melahirkan: otomatis 30 hari sebelum dan 30 hari setelah tanggal.</div>
+                @error('tanggal_acuan')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
+            </div>
+
+            <!-- Tanggal Rentang -->
+            <div id="range-block" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-700 ml-1">Mulai Tanggal</label>
-                    <input name="tanggal_mulai" id="tanggal_mulai" type="date" value="{{ old('tanggal_mulai') }}" min="{{ now()->toDateString() }}" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateTanggalSelesaiMin()">
+                    <input name="tanggal_mulai" id="tanggal_mulai" type="date" value="{{ old('tanggal_mulai') }}" min="{{ now()->toDateString() }}" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateDynamicFields()">
                     @error('tanggal_mulai')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-gray-700 ml-1">Sampai Tanggal</label>
-                    <input name="tanggal_selesai" id="tanggal_selesai" type="date" value="{{ old('tanggal_selesai') }}" min="{{ now()->toDateString() }}" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors hover:bg-gray-100 hover:border-[#D61600]" required>
+                    <input name="tanggal_selesai" id="tanggal_selesai" type="date" value="{{ old('tanggal_selesai') }}" min="{{ now()->toDateString() }}" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateDynamicFields()">
                     @error('tanggal_selesai')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -102,24 +117,13 @@
 </div>
 
 <script>
-    function updateDokumenLabel() {
-        const tipe = document.getElementById('tipe-select').value;
-        const label = document.getElementById('dokumen-label');
-        
-        if (tipe === 'sakit' || tipe === 'menikah') {
-            label.innerText = 'Dokumen (Wajib)';
-        } else {
-            label.innerText = 'Dokumen (Opsional)';
-        }
-    }
-
-    function updateTanggalSelesaiMin() {
+    function updateDynamicFields() {
+        // 1. Update Min Tanggal Selesai
         const tanggalMulai = document.getElementById('tanggal_mulai');
         const tanggalSelesai = document.getElementById('tanggal_selesai');
         
         if (tanggalMulai.value) {
             tanggalSelesai.min = tanggalMulai.value;
-            
             // Jika tanggal selesai yang dipilih sebelumnya lebih kecil dari tanggal mulai baru, reset
             if (tanggalSelesai.value && tanggalSelesai.value < tanggalMulai.value) {
                 tanggalSelesai.value = tanggalMulai.value;
@@ -128,12 +132,67 @@
             // Default min hari ini jika tanggal mulai kosong
             tanggalSelesai.min = "{{ now()->toDateString() }}";
         }
+
+        // 2. Update Label Dokumen & Quota Info
+        const tipe = document.getElementById('tipe-select').value;
+        const label = document.getElementById('dokumen-label');
+        const quotaInfo = document.getElementById('quota-info');
+        const acuanBlock = document.getElementById('acuan-block');
+        const rangeBlock = document.getElementById('range-block');
+        const tanggalAcuan = document.getElementById('tanggal_acuan');
+        let isRequired = false;
+
+        // Show/Hide Quota Info
+        if (tipe === 'cuti_tahunan') {
+            quotaInfo.classList.remove('hidden');
+        } else {
+            quotaInfo.classList.add('hidden');
+        }
+
+        if (tipe === 'melahirkan') {
+            acuanBlock.classList.remove('hidden');
+            rangeBlock.classList.add('hidden');
+            if (tanggalAcuan.value) {
+                const base = new Date(tanggalAcuan.value);
+                const start = new Date(base);
+                start.setDate(base.getDate() - 30);
+                const end = new Date(base);
+                end.setDate(base.getDate() + 29);
+                const yyyyMmDd = (d) => d.toISOString().slice(0,10);
+                tanggalMulai.value = yyyyMmDd(start);
+                tanggalSelesai.value = yyyyMmDd(end);
+            }
+        } else {
+            acuanBlock.classList.add('hidden');
+            rangeBlock.classList.remove('hidden');
+        }
+
+        if (tipe === 'menikah') {
+            isRequired = true;
+        } else if (tipe === 'sakit') {
+            if (tanggalMulai.value && tanggalSelesai.value) {
+                const start = new Date(tanggalMulai.value);
+                const end = new Date(tanggalSelesai.value);
+                const diffTime = end - start;
+                // +1 karena inklusif
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; 
+                
+                if (diffDays > 2) {
+                    isRequired = true;
+                }
+            }
+        }
+
+        if (isRequired) {
+            label.innerText = 'Dokumen (Wajib)';
+        } else {
+            label.innerText = 'Dokumen (Opsional)';
+        }
     }
     
     // Signature Pad Logic
     document.addEventListener('DOMContentLoaded', function() {
-        updateDokumenLabel();
-        updateTanggalSelesaiMin();
+        updateDynamicFields();
 
         const canvas = document.getElementById('signature-pad');
         const signatureInput = document.getElementById('signature-input');

@@ -41,9 +41,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin', 'request.log'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('karyawan', AdminEmployeeController::class)->parameters(['karyawan' => 'employee']);
     Route::resource('positions', AdminPositionController::class)->parameters(['positions' => 'position']);
     Route::resource('shifts', AdminShiftController::class)->parameters(['shifts' => 'shift']);
+    Route::resource('karyawan', AdminEmployeeController::class)->parameters(['karyawan' => 'employee']);
 
     Route::get('/absensi/monitor', [AdminAttendanceMonitorController::class, 'index'])->name('attendance.monitor');
 
@@ -65,7 +65,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin', 'reque
         }
 
         $disk = Storage::disk('public');
-        if (! $disk->exists($path)) {
+        if (!$disk->exists($path)) {
             abort(404);
         }
 
@@ -79,6 +79,7 @@ Route::prefix('karyawan')->name('karyawan.')->middleware(['auth', 'role:employee
     Route::get('/absensi', [KaryawanAttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/absensi/clock-in', [KaryawanAttendanceController::class, 'clockIn'])->name('attendance.clock_in');
     Route::post('/absensi/clock-out', [KaryawanAttendanceController::class, 'clockOut'])->name('attendance.clock_out');
+    Route::post('/absensi/overtime/start', [KaryawanAttendanceController::class, 'overtimeStart'])->name('attendance.overtime.start');
     Route::get('/absensi/riwayat', [KaryawanAttendanceController::class, 'history'])->name('attendance.history');
     Route::get('/absensi/slip.csv', [KaryawanAttendanceController::class, 'slipCsv'])->name('attendance.slip.csv');
 

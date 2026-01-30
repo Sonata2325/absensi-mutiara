@@ -3,7 +3,10 @@
 @section('content')
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <h1 class="text-2xl font-bold">Riwayat Absensi</h1>
-    <a class="px-4 py-2 rounded-lg border text-sm" href="{{ route('karyawan.attendance.slip.csv', ['month' => $month, 'year' => $year]) }}">Download Slip (CSV)</a>
+    <a class="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 transition-colors flex items-center gap-2" href="{{ route('karyawan.attendance.slip.csv', ['month' => $month, 'year' => $year]) }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Slip (Excel)
+    </a>
 </div>
 
 <form method="GET" class="bg-white border rounded-2xl p-4 mb-6 flex flex-wrap gap-3 items-end">

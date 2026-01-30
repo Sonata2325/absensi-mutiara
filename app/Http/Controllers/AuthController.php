@@ -23,10 +23,6 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
 
         if (! Auth::attempt($credentials, $remember)) {
-            Log::warning('Login gagal', [
-                'phone' => $credentials['phone'],
-                'ip' => $request->ip(),
-            ]);
             return back()
                 ->withErrors(['phone' => 'Nomor Telepon atau password salah.'])
                 ->onlyInput('phone');

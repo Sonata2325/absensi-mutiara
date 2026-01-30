@@ -39,13 +39,13 @@
     <!-- Main Action Area -->
     <div class="relative">
         @if($leaveToday)
-            <!-- State: Sedang Cuti -->
+            <!-- State: Sedang Cuti/Izin -->
             <div class="bg-orange-50 border border-orange-100 rounded-3xl p-8 text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4 text-orange-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-800">Sedang Cuti</h2>
-                <p class="text-gray-500 mt-2 text-sm">Anda sedang dalam masa cuti hari ini.</p>
+                <h2 class="text-xl font-bold text-gray-800">Sedang {{ ucfirst(str_replace('_', ' ', $leaveToday->tipe)) }}</h2>
+                <p class="text-gray-500 mt-2 text-sm">Anda sedang dalam masa {{ str_replace('_', ' ', $leaveToday->tipe) }} hari ini.</p>
             </div>
         
         @elseif(!$attendance)
@@ -91,6 +91,18 @@
             </div>
         @endif
     </div>
+
+    @if(!$leaveToday)
+    <form method="POST" action="{{ route('karyawan.attendance.overtime.start') }}" class="w-full">
+        @csrf
+        <button type="submit" class="w-full bg-[#D61600] text-white font-bold py-4 rounded-3xl shadow-lg shadow-red-200 hover:shadow-xl hover:bg-red-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Over Time</span>
+        </button>
+    </form>
+    @endif
 </div>
 
 <!-- Fullscreen Camera Modal -->

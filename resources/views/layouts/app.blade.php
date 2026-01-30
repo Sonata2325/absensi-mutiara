@@ -20,11 +20,11 @@
     <header class="bg-white border-b fixed top-0 left-0 right-0 z-50 shadow-sm">
         <div class="w-full px-4 sm:px-6 md:px-12 h-16 flex items-center justify-between">
             <div class="font-bold text-lg md:text-xl tracking-tight text-[#D61600]">
-                <a href="{{ url('/') }}" class="flex items-center gap-2 md:gap-3">
-                    <img src="{{ asset('LOGO PT.Mutiara.jpeg') }}" alt="Logo" class="h-8 md:h-10 w-auto md:hidden">
-                    <span class="whitespace-nowrap">PT Mutiara Jaya Express</span>
-                </a>
-            </div>
+            <a href="{{ url('/') }}" class="flex items-center gap-2 md:gap-3">
+                <img src="{{ asset('logo_pt_mutiara.png') }}" alt="Logo" class="h-8 md:h-10 w-auto">
+                <span class="whitespace-nowrap">PT Mutiara Jaya Express</span>
+            </a>
+        </div>
 
             <div class="flex items-center gap-6">
                 <!-- Mobile Logout Button -->
@@ -172,7 +172,7 @@
 
     <main class="{{ request()->routeIs('login') ? 'w-full' : 'max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-10' }}">
         @if (session('status'))
-            <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 flex items-center gap-3">
+            <div class="mb-6 bg-red-50 border border-red-200 text-red-800 rounded-xl p-4 flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 {{ session('status') }}
             </div>
