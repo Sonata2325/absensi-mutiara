@@ -49,7 +49,13 @@
             <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Kontak Darurat</div>
             <div class="font-medium text-gray-900">{{ $employee->kontak_darurat ?: '-' }}</div>
         </div>
+        <div class="md:col-span-2 space-y-1 pt-4 border-t border-gray-50">
+            <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Kuota Cuti Tahunan</div>
+            <div class="flex flex-wrap items-center gap-3 text-gray-700">
+                <span class="px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold">Sisa {{ $remainingAnnual }} hari</span>
+                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">Terpakai {{ $usedAnnual }} hari</span>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
-

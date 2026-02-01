@@ -27,6 +27,41 @@
         </a>
     </div>
 
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">Ringkasan Kuota Izin</h2>
+                <p class="text-sm text-gray-500">Sisa kuota berdasarkan jenis izin</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @foreach($quota as $info)
+                <div class="border border-gray-100 rounded-xl p-4 bg-gray-50/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-sm font-semibold text-gray-900">{{ $info['label'] }}</div>
+                        <span class="text-xs font-semibold {{ $info['kategori'] === 'paid' ? 'text-green-700 bg-green-50' : 'text-gray-700 bg-gray-100' }} px-2 py-0.5 rounded-full">
+                            {{ $info['kategori'] === 'paid' ? 'Paid' : 'Unpaid' }}
+                        </span>
+                    </div>
+                    <div class="text-2xl font-semibold text-gray-900">
+                        @if($info['limit'] === null)
+                            Tidak dibatasi
+                        @else
+                            {{ $info['remaining'] }} / {{ $info['limit'] }} hari
+                        @endif
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">
+                        @if($info['limit'] !== null)
+                            Per {{ $info['period'] === 'bulan' ? 'bulan' : ($info['period'] === 'tahun' ? 'tahun' : 'kejadian') }}
+                        @else
+                            Tanpa kuota
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
     <!-- Content Table -->
     @if($leaves->count() > 0)
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">

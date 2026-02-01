@@ -78,6 +78,15 @@
             <h3 class="font-semibold text-gray-900 text-sm md:text-base text-center">Izin / Cuti</h3>
         </a>
 
+        <a href="{{ route('admin.reports.index') }}" class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition group hover:-translate-y-0.5">
+            <div class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-red-50/50 rounded-xl flex items-center justify-center text-red-600 mb-3 group-hover:scale-105 transition duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 text-sm md:text-base text-center">Laporan</h3>
+        </a>
+
         <a href="{{ route('admin.positions.index') }}" class="bg-white p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition group hover:-translate-y-0.5">
             <div class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-yellow-50/50 rounded-xl flex items-center justify-center text-yellow-600 mb-3 group-hover:scale-105 transition duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -147,14 +156,72 @@
 
         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition">
             <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <div class="p-3 bg-orange-50/50 rounded-xl text-orange-600 w-fit">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 font-medium">Izin Menunggu</div>
+                    <div class="text-2xl font-semibold text-gray-900 tracking-tight">{{ $pendingLeaves ?? 0 }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
                 <div class="p-3 bg-purple-50/50 rounded-xl text-purple-600 w-fit">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                 </div>
                 <div>
-                    <div class="text-sm text-gray-500 font-medium">Izin / Cuti</div>
+                    <div class="text-sm text-gray-500 font-medium">Izin / Cuti Hari Ini</div>
                     <div class="text-2xl font-semibold text-gray-900 tracking-tight">{{ $izinHariIni }}</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 tracking-tight">Ringkasan Izin Hari Ini</h2>
+                <p class="text-sm text-gray-500">Pantau karyawan yang sedang izin</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('admin.attendance.monitor') }}" class="px-3 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition">Monitor</a>
+                <a href="{{ route('admin.reports.index') }}" class="px-3 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition">Laporan</a>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="bg-gray-50/50 text-left text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                    <tr>
+                        <th class="px-5 py-3 font-medium">Karyawan</th>
+                        <th class="px-5 py-3 font-medium">Posisi</th>
+                        <th class="px-5 py-3 font-medium">Jenis Izin</th>
+                        <th class="px-5 py-3 font-medium">Tanggal</th>
+                        <th class="px-5 py-3 font-medium">Sisa Cuti Tahunan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @forelse($leaveSummary as $leave)
+                        <tr class="hover:bg-gray-50/50 transition cursor-pointer" onclick="window.location='{{ route('admin.karyawan.show', $leave['employee']->id) }}'">
+                            <td class="px-5 py-3 font-medium text-gray-900">{{ $leave['employee']?->name }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ $leave['employee']?->position?->nama_posisi ?? '-' }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ ucwords(str_replace('_', ' ', $leave['type'])) }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ $leave['start'] }} - {{ $leave['end'] }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ $leave['remaining_annual'] }} hari</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-5 py-8 text-center text-gray-500">
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <span class="text-sm">Tidak ada karyawan yang izin hari ini</span>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 

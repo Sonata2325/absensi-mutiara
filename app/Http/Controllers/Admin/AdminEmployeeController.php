@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\LeaveRequest;
 use App\Models\Position;
 use App\Models\Shift;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
@@ -62,7 +64,24 @@ class AdminEmployeeController extends Controller
 
         $employee->load(['position', 'shift']);
 
-        return view('admin.employees.show', compact('employee'));
+        $usedAnnual = LeaveRequest::query()
+            ->where('employee_id', $employee->id)
+            ->where('tipe', 'cuti_tahunan')
+            ->whereIn('status', ['approved', 'pending'])
+            ->whereYear('tanggal_mulai', now()->year)
+            ->get()
+            ->sum(function ($leave) {
+                return Carbon::parse($leave->tanggal_mulai)
+                    ->diffInDays(Carbon::parse($leave->tanggal_selesai)) + 1;
+            });
+
+        $remainingAnnual = max(0, 12 - (int) $usedAnnual);
+
+        return view('admin.employees.show', [
+            'employee' => $employee,
+            'remainingAnnual' => $remainingAnnual,
+            'usedAnnual' => (int) $usedAnnual,
+        ]);
     }
 
     public function edit(User $employee)

@@ -33,6 +33,45 @@ class AdminDashboardController extends Controller
             ->whereDate('tanggal_selesai', '>=', $today)
             ->count();
 
+        $leaveToday = LeaveRequest::query()
+            ->where('status', 'approved')
+            ->whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->with(['employee.position'])
+            ->orderBy('tanggal_mulai')
+            ->get();
+
+        $employeeIds = $leaveToday->pluck('employee_id')->unique()->values();
+        $annualUsage = collect();
+        if ($employeeIds->isNotEmpty()) {
+            $annualUsage = LeaveRequest::query()
+                ->whereIn('employee_id', $employeeIds)
+                ->where('tipe', 'cuti_tahunan')
+                ->whereIn('status', ['approved', 'pending'])
+                ->whereYear('tanggal_mulai', now()->year)
+                ->get()
+                ->groupBy('employee_id')
+                ->map(function ($items) {
+                    return (int) $items->sum(function ($leave) {
+                        return Carbon::parse($leave->tanggal_mulai)
+                            ->diffInDays(Carbon::parse($leave->tanggal_selesai)) + 1;
+                    });
+                });
+        }
+
+        $leaveSummary = $leaveToday->map(function ($leave) use ($annualUsage) {
+            $usedAnnual = $annualUsage->get($leave->employee_id, 0);
+            $remainingAnnual = max(0, 12 - $usedAnnual);
+
+            return [
+                'employee' => $leave->employee,
+                'type' => $leave->tipe,
+                'start' => $leave->tanggal_mulai?->toDateString(),
+                'end' => $leave->tanggal_selesai?->toDateString(),
+                'remaining_annual' => $remainingAnnual,
+            ];
+        });
+
         $monthStart = now()->startOfMonth()->toDateString();
         $monthEnd = now()->endOfMonth()->toDateString();
         $monthStartDt = now()->startOfMonth()->startOfDay()->toDateTimeString();
@@ -70,6 +109,7 @@ class AdminDashboardController extends Controller
             'izinHariIni' => $izinHariIni,
             'terlambatHariIni' => $terlambatHariIni,
             'chart' => $chart,
+            'leaveSummary' => $leaveSummary,
         ]);
     }
 }
