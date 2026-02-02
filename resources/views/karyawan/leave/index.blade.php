@@ -27,34 +27,34 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+    <div class="bg-[#D61600] rounded-2xl border border-[#D61600] shadow-lg p-6 text-white">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">Ringkasan Kuota Izin</h2>
-                <p class="text-sm text-gray-500">Sisa kuota berdasarkan jenis izin</p>
+                <h2 class="text-xl font-bold text-white">Ringkasan Kuota Izin</h2>
+                <p class="text-sm text-white/80 mt-1">Sisa kuota berdasarkan jenis izin</p>
             </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($quota as $info)
-                <div class="border border-gray-100 rounded-xl p-4 bg-gray-50/60">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="text-sm font-semibold text-gray-900">{{ $info['label'] }}</div>
-                        <span class="text-xs font-semibold {{ $info['kategori'] === 'paid' ? 'text-green-700 bg-green-50' : 'text-gray-700 bg-gray-100' }} px-2 py-0.5 rounded-full">
+                <div class="border border-white/20 rounded-2xl p-5 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="text-sm font-bold text-white tracking-wide">{{ $info['label'] }}</div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider {{ $info['kategori'] === 'paid' ? 'text-[#D61600] bg-white' : 'text-white border border-white/30' }} px-2.5 py-1 rounded-full shadow-sm">
                             {{ $info['kategori'] === 'paid' ? 'Paid' : 'Unpaid' }}
                         </span>
                     </div>
-                    <div class="text-2xl font-semibold text-gray-900">
+                    <div class="text-3xl font-bold text-white tracking-tight mb-1">
                         @if($info['limit'] === null)
-                            Tidak dibatasi
+                            <span class="text-xl">∞</span>
                         @else
-                            {{ $info['remaining'] }} / {{ $info['limit'] }} hari
+                            {{ $info['remaining'] }} <span class="text-lg text-white/60 font-medium">/ {{ $info['limit'] }}</span>
                         @endif
                     </div>
-                    <div class="text-xs text-gray-500 mt-1">
+                    <div class="text-xs text-white/70 font-medium">
                         @if($info['limit'] !== null)
-                            Per {{ $info['period'] === 'bulan' ? 'bulan' : ($info['period'] === 'tahun' ? 'tahun' : 'kejadian') }}
+                            {{ $info['limit'] === null ? '' : 'Hari per ' . ($info['period'] === 'bulan' ? 'Bulan' : ($info['period'] === 'tahun' ? 'Tahun' : 'Kejadian')) }}
                         @else
-                            Tanpa kuota
+                            Tanpa batas kuota
                         @endif
                     </div>
                 </div>

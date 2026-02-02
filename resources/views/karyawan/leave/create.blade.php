@@ -23,40 +23,29 @@
         <div class="space-y-6 relative z-10">
             <!-- Tipe & Dokumen -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-4">
-                    <div class="space-y-2">
-                        <label class="text-sm font-semibold text-gray-700 ml-1">Kategori Izin</label>
-                        <div class="relative">
-                            <select id="kategori-select" name="kategori" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 appearance-none cursor-pointer transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateDynamicFields()">
-                                <option value="paid" @selected(old('kategori', 'paid') === 'paid')>Paid Leave</option>
-                                <option value="unpaid" @selected(old('kategori') === 'unpaid')>Unpaid Leave</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                            </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-semibold text-gray-700 ml-1">Jenis Pengajuan</label>
+                    <div class="relative">
+                        <select id="tipe-select" name="tipe" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 appearance-none cursor-pointer transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateDynamicFields()">
+                            <option value="sakit" @selected(old('tipe') === 'sakit')>Sakit</option>
+                            <option value="cuti_tahunan" @selected(old('tipe') === 'cuti_tahunan')>Cuti Tahunan</option>
+                            <option value="melahirkan" @selected(old('tipe') === 'melahirkan')>Melahirkan</option>
+                            <option value="menikah" @selected(old('tipe') === 'menikah')>Menikah</option>
+                            <option value="duka_keluarga_inti" @selected(old('tipe') === 'duka_keluarga_inti')>Duka Keluarga Inti</option>
+                            <option value="duka_bukan_keluarga_inti" @selected(old('tipe') === 'duka_bukan_keluarga_inti')>Duka Bukan Keluarga Inti</option>
+                            <option value="ulang_tahun" @selected(old('tipe') === 'ulang_tahun')>Ulang Tahun</option>
+                            <option value="idul_fitri" @selected(old('tipe') === 'idul_fitri')>Idul Fitri</option>
+                            <option value="tahun_baru" @selected(old('tipe') === 'tahun_baru')>Tahun Baru</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
-                        @error('kategori')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-sm font-semibold text-gray-700 ml-1">Jenis Pengajuan</label>
-                        <div class="relative">
-                            <select id="tipe-select" name="tipe" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 appearance-none cursor-pointer transition-colors hover:bg-gray-100 hover:border-[#D61600]" required onchange="updateDynamicFields()">
-                                <option value="">Pilih Jenis Izin</option>
-                                @foreach($quota as $key => $info)
-                                    <option value="{{ $key }}" data-kategori="{{ $info['kategori'] }}" @selected(old('tipe') === $key)>{{ $info['label'] }}</option>
-                                @endforeach
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                            </div>
-                        </div>
-                        <div id="leave-type-info" class="hidden mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-700">
-                            <div>Tipe Izin: <span id="leave-type-status" class="font-bold"></span></div>
-                            <div>Maksimal Hari: <span id="leave-max-days" class="font-bold"></span></div>
-                            <div>Kuota: <span id="leave-quota" class="font-bold"></span></div>
-                        </div>
-                        @error('tipe')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
+                    <!-- Info Quota -->
+                    <div id="quota-info" class="hidden mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-700">
+                        Sisa Kuota Cuti Tahunan: <span class="font-bold text-lg">{{ $remainingQuota }}</span> hari
                     </div>
+                    @error('tipe')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="space-y-2">
@@ -78,7 +67,7 @@
             <div id="acuan-block" class="space-y-2 hidden">
                 <label class="text-sm font-semibold text-gray-700 ml-1">Tanggal Acuan</label>
                 <input name="tanggal_acuan" id="tanggal_acuan" type="date" value="{{ old('tanggal_acuan') }}" min="{{ now()->toDateString() }}" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors hover:bg-gray-100 hover:border-[#D61600]" onchange="updateDynamicFields()">
-                <div class="text-xs text-gray-500 ml-1">Untuk melahirkan: otomatis 30 hari sejak tanggal acuan.</div>
+                <div class="text-xs text-gray-500 ml-1">Untuk melahirkan: otomatis 30 hari sebelum dan 30 hari setelah tanggal.</div>
                 @error('tanggal_acuan')<div class="text-xs text-red-500 font-medium ml-1">{{ $message }}</div>@enderror
             </div>
 
@@ -144,76 +133,33 @@
             tanggalSelesai.min = "{{ now()->toDateString() }}";
         }
 
-        const kategori = document.getElementById('kategori-select').value;
+        // 2. Update Label Dokumen & Quota Info
         const tipe = document.getElementById('tipe-select').value;
         const label = document.getElementById('dokumen-label');
-        const leaveInfo = document.getElementById('leave-type-info');
+        const quotaInfo = document.getElementById('quota-info');
         const acuanBlock = document.getElementById('acuan-block');
         const rangeBlock = document.getElementById('range-block');
         const tanggalAcuan = document.getElementById('tanggal_acuan');
         let isRequired = false;
 
-        const leaveTypes = @json($quota);
-
-        Array.from(document.querySelectorAll('#tipe-select option')).forEach((option) => {
-            if (!option.value) {
-                return;
-            }
-            const allowed = option.dataset.kategori === kategori;
-            option.hidden = !allowed;
-            option.disabled = !allowed;
-        });
-
-        if (!tipe || (document.querySelector(`#tipe-select option[value="${tipe}"]`)?.disabled ?? false)) {
-            const firstAllowed = Array.from(document.querySelectorAll('#tipe-select option')).find((option) => option.value && !option.disabled);
-            if (firstAllowed) {
-                firstAllowed.selected = true;
-            }
-        }
-
-        const activeType = document.getElementById('tipe-select').value;
-        const info = leaveTypes[activeType] || null;
-        if (info) {
-            leaveInfo.classList.remove('hidden');
-            document.getElementById('leave-type-status').textContent = info.kategori === 'paid' ? 'Paid Leave' : 'Unpaid Leave';
-            const maxDays = info.remaining !== null ? info.remaining : info.max_days;
-            document.getElementById('leave-max-days').textContent = maxDays !== null ? `${maxDays} hari` : '-';
-            if (info.limit !== null) {
-                const periodLabel = info.period === 'bulan' ? 'bulan' : (info.period === 'tahun' ? 'tahun' : 'kejadian');
-                document.getElementById('leave-quota').textContent = `${info.remaining}/${info.limit} per ${periodLabel}`;
-            } else {
-                document.getElementById('leave-quota').textContent = 'Tidak dibatasi';
-            }
-
-            // Set max date for tanggal_selesai based on maxDays
-            if (maxDays && tanggalMulai.value) {
-                const startDate = new Date(tanggalMulai.value);
-                const endDate = new Date(startDate);
-                endDate.setDate(startDate.getDate() + (maxDays - 1));
-                const yyyyMmDd = (d) => d.toISOString().slice(0,10);
-                tanggalSelesai.max = yyyyMmDd(endDate);
-                
-                // Reset if current selection is out of range
-                if (tanggalSelesai.value && tanggalSelesai.value > tanggalSelesai.max) {
-                    tanggalSelesai.value = tanggalSelesai.max;
-                }
-            } else {
-                tanggalSelesai.removeAttribute('max');
-            }
+        // Show/Hide Quota Info
+        if (tipe === 'cuti_tahunan') {
+            quotaInfo.classList.remove('hidden');
         } else {
-            leaveInfo.classList.add('hidden');
-            tanggalSelesai.removeAttribute('max');
+            quotaInfo.classList.add('hidden');
         }
 
-        if (activeType === 'melahirkan') {
+        if (tipe === 'melahirkan') {
             acuanBlock.classList.remove('hidden');
             rangeBlock.classList.add('hidden');
             if (tanggalAcuan.value) {
                 const base = new Date(tanggalAcuan.value);
+                const start = new Date(base);
+                start.setDate(base.getDate() - 30);
                 const end = new Date(base);
                 end.setDate(base.getDate() + 29);
                 const yyyyMmDd = (d) => d.toISOString().slice(0,10);
-                tanggalMulai.value = yyyyMmDd(base);
+                tanggalMulai.value = yyyyMmDd(start);
                 tanggalSelesai.value = yyyyMmDd(end);
             }
         } else {
@@ -221,9 +167,9 @@
             rangeBlock.classList.remove('hidden');
         }
 
-        if (activeType === 'menikah') {
+        if (tipe === 'menikah') {
             isRequired = true;
-        } else if (activeType === 'sakit') {
+        } else if (tipe === 'sakit') {
             if (tanggalMulai.value && tanggalSelesai.value) {
                 const start = new Date(tanggalMulai.value);
                 const end = new Date(tanggalSelesai.value);
@@ -235,24 +181,6 @@
                     isRequired = true;
                 }
             }
-        }
-
-        if (info) {
-            const maxDays = info.remaining !== null ? info.remaining : info.max_days;
-            if (tanggalMulai.value && maxDays !== null) {
-                const start = new Date(tanggalMulai.value);
-                const maxDate = new Date(start);
-                maxDate.setDate(start.getDate() + maxDays - 1);
-                const yyyyMmDd = (d) => d.toISOString().slice(0,10);
-                tanggalSelesai.max = yyyyMmDd(maxDate);
-                if (tanggalSelesai.value && tanggalSelesai.value > tanggalSelesai.max) {
-                    tanggalSelesai.value = tanggalSelesai.max;
-                }
-            } else {
-                tanggalSelesai.removeAttribute('max');
-            }
-        } else {
-            tanggalSelesai.removeAttribute('max');
         }
 
         if (isRequired) {
