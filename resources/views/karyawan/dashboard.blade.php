@@ -12,7 +12,7 @@
             <!-- Profile Photo -->
             <div class="flex-shrink-0">
                 @if(auth()->user()->foto_profile)
-                    <img src="{{ asset('storage/' . auth()->user()->foto_profile) }}" alt="Profile" class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white/30 shadow-md">
+                    <img src="{{ asset('storage/' . auth()->user()->foto_profile) }}?v={{ time() }}" alt="Profile" class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white/30 shadow-md">
                 @else
                     <div class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/20 border-4 border-white/30 flex items-center justify-center text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

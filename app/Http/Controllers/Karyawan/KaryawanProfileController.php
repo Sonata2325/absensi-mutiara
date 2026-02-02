@@ -28,17 +28,71 @@ class KaryawanProfileController extends Controller
             'alamat' => ['nullable', 'string'],
             'kontak_darurat' => ['nullable', 'string', 'max:255'],
             'foto_profile' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:4096'],
+            'cropped_image' => ['nullable'],
         ]);
 
-        if ($request->hasFile('foto_profile')) {
+        if ($request->filled('cropped_image')) {
+            try {
+                $oldPath = $user->foto_profile;
+                
+                // Handle Base64 Image
+                if (preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_image'), $type)) {
+                    $data = substr($request->input('cropped_image'), strpos($request->input('cropped_image'), ',') + 1);
+                    $type = strtolower($type[1]); // jpg, png, gif
+                    
+                    if (!in_array($type, [ 'jpg', 'jpeg', 'gif', 'png' ])) {
+                        throw new \Exception('invalid image type');
+                    }
+                    $data = base64_decode($data);
+                    
+                    if ($data === false) {
+                        throw new \Exception('base64_decode failed');
+                    }
+
+                    $dir = 'profile/'.now()->format('Y/m');
+                    Storage::disk('public')->makeDirectory($dir);
+                    $filename = now()->format('YmdHis').'-'.bin2hex(random_bytes(6)).'.'.$type;
+                    $path = $dir.'/'.$filename;
+                    
+                    Storage::disk('public')->put($path, $data);
+                    
+                    // Verify file exists
+                    if (!Storage::disk('public')->exists($path)) {
+                        throw new \Exception('Failed to save file to storage');
+                    }
+
+                    $updateData['foto_profile'] = $path; // Use separate array for update
+
+                    // Delete old photo
+                    if ($oldPath && Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                } else {
+                     throw new \Exception('did not match data URI with image data');
+                }
+            } catch (\Exception $e) {
+                \Log::error('Profile photo upload error: ' . $e->getMessage());
+                return back()->withErrors(['foto_profile' => 'Gagal mengupload foto: ' . $e->getMessage()])->withInput();
+            }
+        } elseif ($request->hasFile('foto_profile')) {
             $oldPath = $user->foto_profile;
-            $data['foto_profile'] = $this->storeCompressedImage($request->file('foto_profile'), 'profile', 85, 800);
+            $updateData['foto_profile'] = $this->storeCompressedImage($request->file('foto_profile'), 'profile', 85, 800);
             if ($oldPath && Storage::disk('public')->exists($oldPath)) {
                 Storage::disk('public')->delete($oldPath);
             }
-        } else {
-            unset($data['foto_profile']);
         }
+        
+        // Merge updateData into data (excluding foto_profile from validated data if handled above)
+        if (isset($updateData['foto_profile'])) {
+            $data['foto_profile'] = $updateData['foto_profile'];
+        } else {
+             // If no new photo, remove key so it doesn't nullify existing
+             if (!isset($data['foto_profile'])) {
+                 unset($data['foto_profile']);
+             }
+        }
+        
+        unset($data['cropped_image']); // Remove from update data
 
         $user->update($data);
 

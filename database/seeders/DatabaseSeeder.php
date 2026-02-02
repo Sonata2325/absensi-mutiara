@@ -49,39 +49,52 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::firstOrCreate(
-            ['phone' => '089876543210'],
-            [
-                'name' => 'Karyawan',
-                'password' => 'password',
-                'role' => 'employee',
-                'position_id' => $position->id,
-                'shift_id' => $shift->id,
-                'status' => 'aktif',
-            ]
-        );
-
         $employees = [
-            ['name' => 'Andi Saputra', 'phone' => '081300000001'],
-            ['name' => 'Budi Hartono', 'phone' => '081300000002'],
-            ['name' => 'Citra Lestari', 'phone' => '081300000003'],
-            ['name' => 'Dewi Anggraini', 'phone' => '081300000004'],
-            ['name' => 'Eko Pratama', 'phone' => '081300000005'],
-            ['name' => 'Fajar Hidayat', 'phone' => '081300000006'],
-            ['name' => 'Gita Maharani', 'phone' => '081300000007'],
-            ['name' => 'Hendra Wijaya', 'phone' => '081300000008'],
-            ['name' => 'Intan Permata', 'phone' => '081300000009'],
-            ['name' => 'Joko Susilo', 'phone' => '081300000010'],
+            [
+                'name' => 'Eka Wulan Sari',
+                'phone' => '082123457512',
+                'position' => 'Accounting - Head Office Bekasi – Grand Wisata',
+                'code' => 'ACC-HO-BKS'
+            ],
+            [
+                'name' => 'Puspita',
+                'phone' => '081327627934',
+                'position' => 'Account Payable - Head Office Bekasi – Grand Wisata',
+                'code' => 'AP-HO-BKS'
+            ],
+            [
+                'name' => 'Priyo Aditikno',
+                'phone' => '087881805950',
+                'position' => 'Operation - Head Office Jakarta – Jelambar',
+                'code' => 'OPS-HO-JKT'
+            ],
+            [
+                'name' => 'Susanto',
+                'phone' => '082124823220',
+                'position' => 'Support Office - Head Office Bekasi – Grand Wisata & Jelambar',
+                'code' => 'SUP-HO-ALL'
+            ],
+            [
+                'name' => 'Muhamat Edi',
+                'phone' => '081585423017',
+                'position' => 'Support Office - Head Office Jakarta – Jelambar',
+                'code' => 'SUP-HO-JKT'
+            ],
         ];
 
         foreach ($employees as $employee) {
+            $empPosition = Position::firstOrCreate(
+                ['kode_posisi' => $employee['code']],
+                ['nama_posisi' => $employee['position'], 'deskripsi' => $employee['position']]
+            );
+
             User::firstOrCreate(
                 ['phone' => $employee['phone']],
                 [
                     'name' => $employee['name'],
                     'password' => 'password',
                     'role' => 'employee',
-                    'position_id' => $position->id,
+                    'position_id' => $empPosition->id,
                     'shift_id' => $shift->id,
                     'status' => 'aktif',
                 ]
