@@ -44,6 +44,17 @@
                 @error('shift_id')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
             </div>
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi Kantor</label>
+                <select name="office_location_id" class="w-full border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition bg-white">
+                    <option value="">Belum di-set (Bebas Absen Dimana Saja)</option>
+                    @foreach($offices as $office)
+                        <option value="{{ $office->id }}" @selected(old('office_location_id') == $office->id)>{{ $office->name }}</option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Jika tidak dipilih, karyawan bisa absen dari mana saja.</p>
+                @error('office_location_id')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
+            </div>
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Masuk</label>
                 <input name="tanggal_masuk" type="date" value="{{ old('tanggal_masuk') }}" class="w-full border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition">
                 @error('tanggal_masuk')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
@@ -51,8 +62,8 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 <select name="status" class="w-full border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition bg-white" required>
-                    <option value="aktif" @selected(old('status', 'aktif') === 'aktif')>Aktif</option>
-                    <option value="nonaktif" @selected(old('status') === 'nonaktif')>Nonaktif</option>
+                    <option value="aktif" @selected(old('status') == 'aktif')>Aktif</option>
+                    <option value="nonaktif" @selected(old('status') == 'nonaktif')>Nonaktif</option>
                 </select>
                 @error('status')<div class="text-sm text-red-600 mt-1">{{ $message }}</div>@enderror
             </div>

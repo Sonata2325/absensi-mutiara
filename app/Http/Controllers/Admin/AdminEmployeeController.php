@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LeaveRequest;
+use App\Models\OfficeLocation;
 use App\Models\Position;
 use App\Models\Shift;
 use App\Models\User;
@@ -33,8 +34,9 @@ class AdminEmployeeController extends Controller
         $shifts = Cache::remember('shifts_all', 3600, function () {
             return Shift::query()->orderBy('nama_shift')->get();
         });
+        $offices = OfficeLocation::query()->orderBy('name')->get();
 
-        return view('admin.employees.create', compact('positions', 'shifts'));
+        return view('admin.employees.create', compact('positions', 'shifts', 'offices'));
     }
 
     public function store(Request $request)
@@ -45,6 +47,7 @@ class AdminEmployeeController extends Controller
             'phone' => ['required', 'string', 'max:50', 'unique:users,phone'],
             'position_id' => ['nullable', 'exists:positions,id'],
             'shift_id' => ['nullable', 'exists:shifts,id'],
+            'office_location_id' => ['nullable', 'exists:office_locations,id'],
             'tanggal_masuk' => ['nullable', 'date'],
             'status' => ['required', Rule::in(['aktif', 'nonaktif'])],
             'alamat' => ['nullable', 'string'],
@@ -94,8 +97,9 @@ class AdminEmployeeController extends Controller
         $shifts = Cache::remember('shifts_all', 3600, function () {
             return Shift::query()->orderBy('nama_shift')->get();
         });
+        $offices = OfficeLocation::query()->orderBy('name')->get();
 
-        return view('admin.employees.edit', compact('employee', 'positions', 'shifts'));
+        return view('admin.employees.edit', compact('employee', 'positions', 'shifts', 'offices'));
     }
 
     public function update(Request $request, User $employee)
@@ -108,6 +112,7 @@ class AdminEmployeeController extends Controller
             'phone' => ['required', 'string', 'max:50', Rule::unique('users', 'phone')->ignore($employee->id)],
             'position_id' => ['nullable', 'exists:positions,id'],
             'shift_id' => ['nullable', 'exists:shifts,id'],
+            'office_location_id' => ['nullable', 'exists:office_locations,id'],
             'tanggal_masuk' => ['nullable', 'date'],
             'status' => ['required', Rule::in(['aktif', 'nonaktif'])],
             'alamat' => ['nullable', 'string'],

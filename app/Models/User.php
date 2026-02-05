@@ -27,6 +27,7 @@ class User extends Authenticatable
         'role',
         'phone',
         'position_id',
+        'office_location_id',
         'shift_id',
         'tanggal_masuk',
         'status',
@@ -66,6 +67,11 @@ class User extends Authenticatable
     public function shift(): BelongsTo
     {
         return $this->belongsTo(Shift::class);
+    }
+
+    public function officeLocation(): BelongsTo
+    {
+        return $this->belongsTo(OfficeLocation::class);
     }
 
     public function attendances(): HasMany

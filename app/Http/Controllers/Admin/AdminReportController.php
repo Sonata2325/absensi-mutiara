@@ -66,85 +66,95 @@ class AdminReportController extends Controller
         $filename = "laporan-absensi-{$year}-".str_pad((string) $month, 2, '0', STR_PAD_LEFT).'.xls';
         $monthName = Carbon::createFromDate($year, $month, 1)->translatedFormat('F Y');
 
-        $html = '
-        <html>
-        <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-            <style>
-                body { font-family: Arial, sans-serif; }
-                table { border-collapse: collapse; width: 100%; }
-                th, td { border: 1px solid #000000; padding: 8px; text-align: left; vertical-align: top; }
-                th { background-color: #e0e0e0; font-weight: bold; }
-                .title { font-size: 18px; font-weight: bold; margin-bottom: 20px; text-align: center; }
-                .info-table { margin-bottom: 20px; border: none; }
-                .info-table td { border: none; padding: 5px; }
-            </style>
-        </head>
-        <body>
-            <div class="title">LAPORAN KEHADIRAN KARYAWAN</div>
-            <table class="info-table">
-                <tr>
-                    <td style="width: 150px; font-weight: bold;">Periode</td>
-                    <td>: ' . htmlspecialchars($monthName) . '</td>
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;">Perusahaan</td>
-                    <td>: PT Mutiara Jaya Express</td>
-                </tr>
-            </table>
-            <table>
-                <thead>
+        // Use output buffering to stream response for memory efficiency
+        return response()->stream(function () use ($rows, $monthName) {
+            $handle = fopen('php://output', 'w');
+            
+            // Write HTML Header
+            fwrite($handle, '
+            <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid #000000; padding: 8px; text-align: left; vertical-align: top; }
+                    th { background-color: #e0e0e0; font-weight: bold; }
+                    .title { font-size: 18px; font-weight: bold; margin-bottom: 20px; text-align: center; }
+                    .info-table { margin-bottom: 20px; border: none; }
+                    .info-table td { border: none; padding: 5px; }
+                </style>
+            </head>
+            <body>
+                <div class="title">LAPORAN KEHADIRAN KARYAWAN</div>
+                <table class="info-table">
                     <tr>
-                        <th>Tanggal</th>
-                        <th>Nama</th>
-                        <th>Posisi</th>
-                        <th>Shift</th>
-                        <th>Jam Masuk</th>
-                        <th>Jam Keluar</th>
-                        <th>Status</th>
-                        <th>Overtime</th>
-                        <th>Deskripsi</th>
-                        <th>Tipe Izin</th>
+                        <td style="width: 150px; font-weight: bold;">Periode</td>
+                        <td>: ' . htmlspecialchars($monthName) . '</td>
                     </tr>
-                </thead>
-                <tbody>';
+                    <tr>
+                        <td style="font-weight: bold;">Perusahaan</td>
+                        <td>: PT Mutiara Jaya Express</td>
+                    </tr>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Nama</th>
+                            <th>Posisi</th>
+                            <th>Shift</th>
+                            <th>Jam Masuk</th>
+                            <th>Jam Keluar</th>
+                            <th>Status</th>
+                            <th>Overtime</th>
+                            <th>Deskripsi</th>
+                            <th>Tipe Izin</th>
+                        </tr>
+                    </thead>
+                    <tbody>');
 
-        foreach ($rows as $row) {
-            $leaveType = '-';
-            $status = strtolower($row->status ?? '');
-            $isOvertime = $status === 'overtime' ? 'Ya' : '-';
+            // Chunking is not applicable here because we already loaded $rows with get().
+            // For true memory optimization, we should use cursor() in the query, but $rows is already a Collection here.
+            // Given the previous code used get(), we stick to it but stream the output to avoid building a huge string in memory.
+            
+            foreach ($rows as $row) {
+                $leaveType = '-';
+                $status = strtolower($row->status ?? '');
+                $isOvertime = $status === 'overtime' ? 'Ya' : '-';
 
-            if (in_array($status, ['izin', 'cuti', 'sakit']) && $row->employee && $row->employee->leaveRequests) {
-                $attendanceDate = Carbon::parse($row->tanggal);
-                $leave = $row->employee->leaveRequests->first(function ($lr) use ($attendanceDate) {
-                    return $attendanceDate->between(Carbon::parse($lr->tanggal_mulai), Carbon::parse($lr->tanggal_selesai));
-                });
-                if ($leave) {
-                    $leaveType = ucwords(str_replace('_', ' ', $leave->tipe));
+                if (in_array($status, ['izin', 'cuti', 'sakit']) && $row->employee && $row->employee->leaveRequests) {
+                    $attendanceDate = Carbon::parse($row->tanggal);
+                    $leave = $row->employee->leaveRequests->first(function ($lr) use ($attendanceDate) {
+                        return $attendanceDate->between(Carbon::parse($lr->tanggal_mulai), Carbon::parse($lr->tanggal_selesai));
+                    });
+                    if ($leave) {
+                        $leaveType = ucwords(str_replace('_', ' ', $leave->tipe));
+                    }
                 }
+
+                fwrite($handle, '<tr>'
+                    . '<td>' . htmlspecialchars((string) $row->tanggal?->toDateString()) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($row->employee?->name ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($row->employee?->position?->nama_posisi ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($row->employee?->shift?->nama_shift ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($row->jam_masuk ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($row->jam_keluar ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($row->status ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars($isOvertime) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($row->keterangan ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars($leaveType) . '</td>'
+                    . '</tr>');
             }
 
-            $html .= '<tr>'
-                . '<td>' . htmlspecialchars((string) $row->tanggal?->toDateString()) . '</td>'
-                . '<td>' . htmlspecialchars((string) ($row->employee?->name ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars((string) ($row->employee?->position?->nama_posisi ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars((string) ($row->employee?->shift?->nama_shift ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars((string) ($row->jam_masuk ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars((string) ($row->jam_keluar ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars((string) ($row->status ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars($isOvertime) . '</td>'
-                . '<td>' . htmlspecialchars((string) ($row->keterangan ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars($leaveType) . '</td>'
-                . '</tr>';
-        }
-
-        $html .= '
-                </tbody>
-            </table>
-        </body>
-        </html>';
-
-        return response($html, 200, [
+            fwrite($handle, '
+                    </tbody>
+                </table>
+            </body>
+            </html>');
+            
+            fclose($handle);
+        }, 200, [
             'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);

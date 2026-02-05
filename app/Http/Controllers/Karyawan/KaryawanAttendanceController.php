@@ -116,15 +116,23 @@ class KaryawanAttendanceController extends Controller
                 'status' => $status,
             ]);
         } else {
-            Attendance::create([
-                'employee_id' => $user->id,
-                'tanggal' => $tanggalStore,
-                'jam_masuk' => now()->format('H:i:s'),
-                'lokasi_masuk_lat' => (float) $data['lat'],
-                'lokasi_masuk_lng' => (float) $data['lng'],
-                'foto_masuk' => $fotoPath,
-                'status' => $status,
-            ]);
+            try {
+                Attendance::create([
+                    'employee_id' => $user->id,
+                    'tanggal' => $tanggalStore,
+                    'jam_masuk' => now()->format('H:i:s'),
+                    'lokasi_masuk_lat' => (float) $data['lat'],
+                    'lokasi_masuk_lng' => (float) $data['lng'],
+                    'foto_masuk' => $fotoPath,
+                    'status' => $status,
+                ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+                // Catch duplicate entry error (Race Condition)
+                if ($e->errorInfo[1] == 1062 || str_contains($e->getMessage(), 'Constraint violation') || str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
+                    return back()->with('status', 'Kamu sudah clock in hari ini.');
+                }
+                throw $e;
+            }
         }
 
         return back()->with('status', 'Clock in berhasil.');
@@ -424,17 +432,23 @@ class KaryawanAttendanceController extends Controller
 
     private function isWithinOffice(float $lat, float $lng): bool
     {
-        $officeLat = Setting::getValue('office_lat', null);
-        $officeLng = Setting::getValue('office_lng', null);
-        $radius = (int) (Setting::getValue('office_radius_meters', '200') ?? '200');
-
-        if ($officeLat === null || $officeLng === null || $officeLat === '' || $officeLng === '') {
+        $user = auth()->user();
+        
+        // If user has no specific office assigned, allow attendance from anywhere
+        if (! $user->office_location_id) {
             return true;
         }
 
-        $distance = $this->haversineMeters($lat, $lng, (float) $officeLat, (float) $officeLng);
+        $office = $user->officeLocation;
+        
+        // Safety check if relation is missing despite id being set
+        if (! $office) {
+            return true;
+        }
 
-        return $distance <= $radius;
+        $distance = $this->haversineMeters($lat, $lng, (float) $office->latitude, (float) $office->longitude);
+
+        return $distance <= $office->radius;
     }
 
     private function haversineMeters(float $lat1, float $lon1, float $lat2, float $lon2): float

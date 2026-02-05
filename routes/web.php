@@ -58,6 +58,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin', 'reque
 
     Route::get('/settings', [AdminSettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [AdminSettingsController::class, 'update'])->name('settings.update');
+    Route::post('/settings/office', [AdminSettingsController::class, 'storeOffice'])->name('settings.office.store');
+    Route::put('/settings/office/{office}', [AdminSettingsController::class, 'updateOffice'])->name('settings.office.update');
+    Route::delete('/settings/office/{office}', [AdminSettingsController::class, 'destroyOffice'])->name('settings.office.destroy');
 
     Route::get('/file/{path}', function (string $path) {
         if (str_contains($path, '..')) {
