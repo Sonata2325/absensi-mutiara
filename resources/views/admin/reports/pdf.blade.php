@@ -24,6 +24,8 @@
                     <th class="p-2">Masuk</th>
                     <th class="p-2">Keluar</th>
                     <th class="p-2">Status</th>
+                    <th class="p-2">Overtime</th>
+                    <th class="p-2">Deskripsi</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,6 +38,8 @@
                         <td class="p-2">{{ $a->jam_masuk }}</td>
                         <td class="p-2">{{ $a->jam_keluar }}</td>
                         <td class="p-2">{{ $a->status }}</td>
+                        <td class="p-2">{{ $a->status === 'overtime' ? 'Ya' : '-' }}</td>
+                        <td class="p-2">{{ $a->keterangan ?? '-' }}</td>
                     </tr>
                 @endforeach
             </tbody>

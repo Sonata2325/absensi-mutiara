@@ -36,6 +36,8 @@
                     <th class="px-6 py-4 font-medium">Masuk</th>
                     <th class="px-6 py-4 font-medium">Keluar</th>
                     <th class="px-6 py-4 font-medium">Status</th>
+                    <th class="px-6 py-4 font-medium">Overtime</th>
+                    <th class="px-6 py-4 font-medium">Deskripsi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -52,14 +54,27 @@
                                 {{ $a->status === 'hadir' ? 'bg-green-50 text-green-700 ring-1 ring-green-200/50' : '' }}
                                 {{ $a->status === 'terlambat' ? 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200/50' : '' }}
                                 {{ $a->status === 'alpha' ? 'bg-red-50 text-red-700 ring-1 ring-red-200/50' : '' }}
+                                {{ $a->status === 'overtime' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200/50' : '' }}
                             ">
                                 {{ ucfirst($a->status) }}
                             </span>
                         </td>
+                        <td class="px-6 py-4">
+                            @if($a->status === 'overtime')
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 ring-1 ring-red-200/50">
+                                    Ya
+                                </span>
+                            @else
+                                <span class="text-gray-400 text-xs">-</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-gray-600 max-w-xs truncate" title="{{ $a->keterangan ?? '' }}">
+                            {{ $a->keterangan ?? '-' }}
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td class="px-6 py-8 text-center text-gray-500" colspan="7">Belum ada data absensi untuk periode ini.</td>
+                        <td class="px-6 py-8 text-center text-gray-500" colspan="9">Belum ada data absensi untuk periode ini.</td>
                     </tr>
                 @endforelse
             </tbody>

@@ -21,7 +21,7 @@
                 </label>
                 <div class="mt-1">
                     <input id="phone" name="phone" type="text" autocomplete="tel" required 
-                        class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#D61600] focus:border-[#D61600] sm:text-sm"
+                        class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                         value="{{ old('phone') }}">
                 </div>
                 @error('phone')
@@ -35,7 +35,7 @@
                 </label>
                 <div class="mt-1">
                     <input id="password" name="password" type="password" autocomplete="current-password" required 
-                        class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#D61600] focus:border-[#D61600] sm:text-sm">
+                        class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm">
                 </div>
                 @error('password')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -45,7 +45,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <input id="remember_me" name="remember" type="checkbox" value="1" 
-                        class="h-4 w-4 text-[#D61600] focus:ring-[#D61600] border-gray-300 rounded accent-[#D61600]">
+                        class="h-4 w-4 text-black focus:ring-black border-gray-300 rounded accent-black">
                     <label for="remember_me" class="ml-2 block text-sm text-gray-900">
                         Ingat saya
                     </label>
@@ -65,4 +65,3 @@
     </div>
 </div>
 @endsection
-

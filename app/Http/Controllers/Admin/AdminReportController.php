@@ -102,8 +102,9 @@ class AdminReportController extends Controller
                         <th>Jam Masuk</th>
                         <th>Jam Keluar</th>
                         <th>Status</th>
+                        <th>Overtime</th>
+                        <th>Deskripsi</th>
                         <th>Tipe Izin</th>
-                        <th>Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>';
@@ -111,6 +112,8 @@ class AdminReportController extends Controller
         foreach ($rows as $row) {
             $leaveType = '-';
             $status = strtolower($row->status ?? '');
+            $isOvertime = $status === 'overtime' ? 'Ya' : '-';
+
             if (in_array($status, ['izin', 'cuti', 'sakit']) && $row->employee && $row->employee->leaveRequests) {
                 $attendanceDate = Carbon::parse($row->tanggal);
                 $leave = $row->employee->leaveRequests->first(function ($lr) use ($attendanceDate) {
@@ -129,8 +132,9 @@ class AdminReportController extends Controller
                 . '<td>' . htmlspecialchars((string) ($row->jam_masuk ?? '')) . '</td>'
                 . '<td>' . htmlspecialchars((string) ($row->jam_keluar ?? '')) . '</td>'
                 . '<td>' . htmlspecialchars((string) ($row->status ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars($leaveType) . '</td>'
+                . '<td>' . htmlspecialchars($isOvertime) . '</td>'
                 . '<td>' . htmlspecialchars((string) ($row->keterangan ?? '')) . '</td>'
+                . '<td>' . htmlspecialchars($leaveType) . '</td>'
                 . '</tr>';
         }
 

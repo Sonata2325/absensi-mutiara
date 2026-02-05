@@ -226,9 +226,20 @@ class KaryawanAttendanceController extends Controller
             }
         }
 
+        $request->validate([
+            'deskripsi' => 'nullable|string|max:500',
+        ]);
+
+        $deskripsi = $request->input('deskripsi');
+        $overtimeNote = 'Over Time mulai '.now()->format('H:i');
+        
+        if ($deskripsi) {
+            $overtimeNote .= ' - ' . $deskripsi;
+        }
+
         $attendance->update([
             'status' => 'overtime',
-            'keterangan' => trim((string) ($attendance->keterangan ? $attendance->keterangan.' ' : '').'Over Time mulai '.now()->format('H:i')),
+            'keterangan' => trim((string) ($attendance->keterangan ? $attendance->keterangan.' ' : '').$overtimeNote),
         ]);
 
         return back()->with('status', 'Over time dimulai.');

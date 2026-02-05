@@ -4,10 +4,10 @@
 <div class="max-w-md mx-auto space-y-8">
     <!-- Header Section -->
     <div class="text-center pt-4">
-        <h1 id="live-clock" class="text-4xl font-bold text-[#D61600] tracking-tight mb-2">{{ now()->format('H:i:s') }}</h1>
+        <h1 id="live-clock" class="text-4xl font-bold text-black tracking-tight mb-2">{{ now()->format('H:i:s') }}</h1>
         <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#D61600]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            <span class="text-sm font-medium text-[#D61600]">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <span class="text-sm font-medium text-black">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
     <div class="grid grid-cols-2 gap-4">
         <!-- Jam Masuk -->
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-[1.02]">
-            <div class="p-3 bg-red-50 rounded-full text-[#D61600]">
+            <div class="p-3 bg-red-50 rounded-full text-black">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
             </div>
             <div class="text-center">
@@ -26,7 +26,7 @@
 
         <!-- Jam Keluar -->
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-[1.02]">
-            <div class="p-3 bg-red-50 rounded-full text-[#D61600]">
+            <div class="p-3 bg-red-50 rounded-full text-black">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
             </div>
             <div class="text-center">
@@ -50,7 +50,7 @@
         
         @elseif(!$attendance)
             <!-- State: Belum Absen -->
-            <button onclick="openCamera('in')" class="group w-full relative overflow-hidden bg-[#D61600] rounded-3xl p-8 shadow-lg shadow-red-200 transition-all hover:shadow-xl hover:scale-[1.01] active:scale-95">
+            <button onclick="openCamera('in')" class="group w-full relative overflow-hidden bg-black rounded-3xl p-8 shadow-lg shadow-red-200 transition-all hover:shadow-xl hover:scale-[1.01] active:scale-95">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
                 <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-black/10 rounded-full blur-3xl"></div>
@@ -68,13 +68,13 @@
 
         @elseif($attendance->jam_masuk && !$attendance->jam_keluar)
             <!-- State: Sudah Absen Masuk, Belum Keluar -->
-            <button onclick="openCamera('out')" class="group w-full relative overflow-hidden bg-white border-2 border-[#D61600] rounded-3xl p-8 shadow-sm transition-all hover:shadow-md hover:bg-red-50 active:scale-95">
+            <button onclick="openCamera('out')" class="group w-full relative overflow-hidden bg-white border-2 border-black rounded-3xl p-8 shadow-sm transition-all hover:shadow-md hover:bg-red-50 active:scale-95">
                 <div class="relative z-10 flex flex-col items-center gap-4">
-                    <div class="p-4 bg-red-100 rounded-2xl text-[#D61600] group-hover:scale-110 transition-transform duration-300">
+                    <div class="p-4 bg-red-100 rounded-2xl text-black group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </div>
                     <div class="text-center">
-                        <h3 class="text-2xl font-bold text-[#D61600] tracking-tight">CLOCK OUT</h3>
+                        <h3 class="text-2xl font-bold text-black tracking-tight">CLOCK OUT</h3>
                         <p class="text-gray-500 text-sm mt-1">Absen Pulang</p>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
             <!-- State: Sudah Selesai -->
             <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-white shadow-sm rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#D61600]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <h2 class="text-xl font-bold text-gray-800">Selesai</h2>
                 <p class="text-gray-500 mt-2 text-sm">Terima kasih atas kerja keras Anda hari ini!</p>
@@ -93,16 +93,54 @@
     </div>
 
     @if(!$leaveToday)
-    <form method="POST" action="{{ route('karyawan.attendance.overtime.start') }}" class="w-full">
-        @csrf
-        <button type="submit" class="w-full bg-[#D61600] text-white font-bold py-4 rounded-3xl shadow-lg shadow-red-200 hover:shadow-xl hover:bg-red-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+    <div class="w-full">
+        <button type="button" onclick="openOvertimeModal()" class="w-full bg-[#D61600] text-white font-bold py-4 rounded-3xl shadow-lg shadow-red-200 hover:shadow-xl hover:bg-[#b01200] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>Over Time</span>
+            <span>Overtime</span>
         </button>
-    </form>
+    </div>
     @endif
+</div>
+
+<!-- Overtime Modal -->
+<div id="overtime-modal" class="fixed inset-0 z-[70] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-900/75 transition-opacity backdrop-blur-sm"></div>
+    
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all w-full max-w-lg mx-4">
+                <form method="POST" action="{{ route('karyawan.attendance.overtime.start') }}">
+                    @csrf
+                    <div class="bg-white px-6 pb-6 pt-6">
+                        <div class="flex flex-col items-center">
+                            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50 mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#D61600]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold leading-6 text-gray-900 mb-2" id="modal-title">Konfirmasi Overtime</h3>
+                            <p class="text-sm text-gray-500 text-center mb-6">Silakan isi tujuan atau alasan Anda melakukan overtime hari ini.</p>
+                            
+                            <div class="w-full">
+                                <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi / Tujuan</label>
+                                <textarea id="deskripsi" name="deskripsi" rows="4" class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors resize-none" placeholder="Contoh: Menyelesaikan laporan bulanan..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-6 py-4 flex flex-row items-center justify-between gap-3">
+                        <button type="button" onclick="closeOvertimeModal()" class="w-1/2 justify-center rounded-xl bg-white px-4 py-3 text-sm font-bold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all">
+                            Batalkan
+                        </button>
+                        <button type="submit" class="w-1/2 justify-center rounded-xl bg-[#D61600] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-red-200 hover:bg-[#b01200] transition-all">
+                            Lanjutkan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Fullscreen Camera Modal -->
@@ -126,7 +164,7 @@
         
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="absolute inset-0 z-30 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center hidden">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#D61600] border-t-transparent mb-4"></div>
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-black border-t-transparent mb-4"></div>
             <div class="text-white font-medium tracking-wide">Memproses Lokasi...</div>
         </div>
     </div>
@@ -135,7 +173,7 @@
     <div class="bg-black p-8 pb-12 flex flex-col items-center gap-6">
         <!-- Capture Button -->
         <button id="btn-capture" onclick="takeSnapshot()" class="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center active:scale-95 transition-all hover:bg-white/10">
-            <div class="w-16 h-16 bg-[#D61600] rounded-full pointer-events-none"></div>
+            <div class="w-16 h-16 bg-black rounded-full pointer-events-none"></div>
         </button>
 
         <!-- Preview Actions (Hidden by default) -->
@@ -151,7 +189,7 @@
                 <input type="hidden" name="lng" id="form-lng">
                 <input type="file" name="photo" id="form-file" class="hidden"> 
                 
-                <button type="submit" class="w-full bg-[#D61600] text-white font-bold py-4 rounded-2xl text-lg shadow-lg shadow-red-900/20 active:bg-red-700 hover:bg-red-600 transition flex items-center justify-center gap-2">
+                <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-2xl text-lg shadow-lg shadow-red-900/20 active:bg-red-700 hover:bg-red-600 transition flex items-center justify-center gap-2">
                     <span>Kirim Absensi</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                 </button>
@@ -196,6 +234,18 @@
         }
 
         startCamera();
+    }
+
+    function openOvertimeModal() {
+        const modal = document.getElementById('overtime-modal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeOvertimeModal() {
+        const modal = document.getElementById('overtime-modal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
     }
 
     function closeCamera() {

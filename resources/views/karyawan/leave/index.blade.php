@@ -27,32 +27,32 @@
         </a>
     </div>
 
-    <div class="bg-[#D61600] rounded-2xl border border-[#D61600] shadow-lg p-6 text-white">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
-            <div>
-                <h2 class="text-xl font-bold text-white">Ringkasan Kuota Izin</h2>
-                <p class="text-sm text-white/80 mt-1">Sisa kuota berdasarkan jenis izin</p>
-            </div>
+    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Ringkasan Kuota Izin</h2>
+            <p class="text-sm text-gray-500 mt-1">Informasi sisa kuota cuti dan izin Anda saat ini</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($quota as $info)
-                <div class="border border-white/20 rounded-2xl p-5 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="text-sm font-bold text-white tracking-wide">{{ $info['label'] }}</div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider {{ $info['kategori'] === 'paid' ? 'text-[#D61600] bg-white' : 'text-white border border-white/30' }} px-2.5 py-1 rounded-full shadow-sm">
+                <div class="group bg-gray-50 rounded-2xl p-6 border border-gray-200 transition-all duration-300 hover:border-[#D61600] hover:shadow-md relative overflow-hidden">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">{{ $info['label'] }}</div>
+                        <span class="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider {{ $info['kategori'] === 'paid' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-transparent text-[#D61600] border border-[#D61600]' }}">
                             {{ $info['kategori'] === 'paid' ? 'Paid' : 'Unpaid' }}
                         </span>
                     </div>
-                    <div class="text-3xl font-bold text-white tracking-tight mb-1">
+                    <div class="flex items-baseline gap-1.5 mb-2">
                         @if($info['limit'] === null)
-                            <span class="text-xl">∞</span>
+                            <span class="text-4xl font-bold text-gray-900">∞</span>
                         @else
-                            {{ $info['remaining'] }} <span class="text-lg text-white/60 font-medium">/ {{ $info['limit'] }}</span>
+                            <span class="text-4xl font-bold text-gray-900">{{ $info['remaining'] }}</span>
+                            <span class="text-xl text-gray-400 font-medium">/ {{ $info['limit'] }}</span>
                         @endif
                     </div>
-                    <div class="text-xs text-white/70 font-medium">
+                    <div class="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         @if($info['limit'] !== null)
-                            {{ $info['limit'] === null ? '' : 'Hari per ' . ($info['period'] === 'bulan' ? 'Bulan' : ($info['period'] === 'tahun' ? 'Tahun' : 'Kejadian')) }}
+                            Hari per {{ $info['period'] === 'bulan' ? 'Bulan' : ($info['period'] === 'tahun' ? 'Tahun' : 'Kejadian') }}
                         @else
                             Tanpa batas kuota
                         @endif

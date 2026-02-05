@@ -48,6 +48,8 @@
                     <th class="px-6 py-4 font-medium">Posisi</th>
                     <th class="px-6 py-4 font-medium">Shift</th>
                     <th class="px-6 py-4 font-medium">Status Hari Ini</th>
+                    <th class="px-6 py-4 font-medium">Overtime</th>
+                    <th class="px-6 py-4 font-medium">Deskripsi</th>
                     <th class="px-6 py-4 font-medium">Jam Masuk</th>
                     <th class="px-6 py-4 font-medium">Lokasi/Foto Masuk</th>
                     <th class="px-6 py-4 font-medium">Jam Keluar</th>
@@ -74,6 +76,18 @@
                             ">
                                 {{ ucfirst($status) }}
                             </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            @if(($att->status ?? '') === 'overtime')
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 ring-1 ring-red-200/50">
+                                    Ya
+                                </span>
+                            @else
+                                <span class="text-gray-400 text-xs">-</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-gray-600 max-w-xs truncate" title="{{ $att->keterangan ?? '' }}">
+                            {{ $att->keterangan ?? '-' }}
                         </td>
                         <td class="px-6 py-4 text-gray-900">{{ $att?->jam_masuk ?? '-' }}</td>
                         <td class="px-6 py-4">
