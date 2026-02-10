@@ -60,7 +60,7 @@
         </form>
         
         <div class="mt-6 text-center text-xs text-gray-400">
-            &copy; {{ date('Y') }} Mutiara HR System
+            &copy; {{ date('Y') }} Mutiara Attendance System
         </div>
     </div>
 </div>

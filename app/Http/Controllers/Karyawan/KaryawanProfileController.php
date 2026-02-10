@@ -37,15 +37,15 @@ class KaryawanProfileController extends Controller
                 
                 // Handle Base64 Image
                 if (preg_match('/^data:image\/(\w+);base64,/', $request->input('cropped_image'), $type)) {
-                    $data = substr($request->input('cropped_image'), strpos($request->input('cropped_image'), ',') + 1);
+                    $imageContent = substr($request->input('cropped_image'), strpos($request->input('cropped_image'), ',') + 1);
                     $type = strtolower($type[1]); // jpg, png, gif
                     
                     if (!in_array($type, [ 'jpg', 'jpeg', 'gif', 'png' ])) {
                         throw new \Exception('invalid image type');
                     }
-                    $data = base64_decode($data);
+                    $imageContent = base64_decode($imageContent);
                     
-                    if ($data === false) {
+                    if ($imageContent === false) {
                         throw new \Exception('base64_decode failed');
                     }
 
@@ -54,7 +54,7 @@ class KaryawanProfileController extends Controller
                     $filename = now()->format('YmdHis').'-'.bin2hex(random_bytes(6)).'.'.$type;
                     $path = $dir.'/'.$filename;
                     
-                    Storage::disk('public')->put($path, $data);
+                    Storage::disk('public')->put($path, $imageContent);
                     
                     // Verify file exists
                     if (!Storage::disk('public')->exists($path)) {

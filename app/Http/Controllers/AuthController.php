@@ -22,9 +22,16 @@ class AuthController extends Controller
 
         $remember = $request->boolean('remember');
 
-        if (! Auth::attempt($credentials, $remember)) {
+        // Tambahkan pengecekan status aktif
+        $credentials['status'] = 'aktif';
+
+        // Note: We enforce SESSION_LIFETIME (24h) and disable the long-lived 'remember_token' (5 years)
+        // to ensure users are logged out after 24 hours of inactivity.
+        // We pass 'false' for the remember parameter to Auth::attempt regardless of the checkbox.
+        // The session itself will persist for 24 hours (1440 minutes) as configured in .env.
+        if (! Auth::attempt($credentials, false)) {
             return back()
-                ->withErrors(['phone' => 'Nomor Telepon atau password salah.'])
+                ->withErrors(['phone' => 'Nomor Telepon atau password salah, atau akun tidak aktif.'])
                 ->onlyInput('phone');
         }
 

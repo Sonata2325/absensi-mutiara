@@ -188,6 +188,25 @@ class KaryawanLeaveRequestController extends Controller
             $end = \Illuminate\Support\Carbon::parse($request->tanggal_selesai);
             $diffInDays = $start->diffInDays($end) + 1;
 
+            // Validasi: Cek Overlap Tanggal (Bug Fix)
+            // Pastikan tidak ada pengajuan lain (status approved/pending) yang beririsan dengan rentang tanggal ini
+            $overlap = LeaveRequest::query()
+                ->where('employee_id', $user->id)
+                ->whereIn('status', ['approved', 'pending'])
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('tanggal_mulai', [$start, $end])
+                          ->orWhereBetween('tanggal_selesai', [$start, $end])
+                          ->orWhere(function ($q) use ($start, $end) {
+                              $q->where('tanggal_mulai', '<=', $start)
+                                ->where('tanggal_selesai', '>=', $end);
+                          });
+                })
+                ->exists();
+
+            if ($overlap) {
+                return back()->withErrors(['tanggal_mulai' => 'Anda sudah memiliki pengajuan izin/cuti pada rentang tanggal tersebut.'])->withInput();
+            }
+
             // 1. Logika Sakit (3 hari per bulan)
             if ($request->tipe === 'sakit') {
                 // Jika > 2 hari, dokumen wajib
