@@ -52,6 +52,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin', 'reque
     Route::post('/izin/{leave}/approve', [AdminLeaveRequestController::class, 'approve'])->name('leave.approve');
     Route::post('/izin/{leave}/reject', [AdminLeaveRequestController::class, 'reject'])->name('leave.reject');
     Route::post('/izin/{leave}/approve-cancellation', [AdminLeaveRequestController::class, 'approveCancellation'])->name('leave.approve_cancellation');
+    Route::post('/izin/{leave}/reject-cancellation', [AdminLeaveRequestController::class, 'rejectCancellation'])->name('leave.reject_cancellation');
 
     Route::get('/laporan', [AdminReportController::class, 'index'])->name('reports.index');
     Route::get('/laporan/absensi.csv', [AdminReportController::class, 'attendanceCsv'])->name('reports.attendance.csv');

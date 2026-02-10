@@ -12,7 +12,7 @@ class AdminLeaveRequestController extends Controller
     {
         $leaves = LeaveRequest::query()
             ->with(['employee', 'approver'])
-            ->orderByRaw("case when status = 'pending' then 0 else 1 end")
+            ->orderByRaw("case when status IN ('pending', 'cancellation_requested') then 0 else 1 end")
             ->orderByDesc('created_at')
             ->paginate(15);
 
@@ -33,6 +33,19 @@ class AdminLeaveRequestController extends Controller
         ]);
 
         return back()->with('status', 'Pengajuan berhasil dibatalkan (status: cancelled).');
+    }
+
+    public function rejectCancellation(Request $request, LeaveRequest $leave)
+    {
+        $data = $request->validate([
+            'approval_note' => ['nullable', 'string'],
+        ]);
+
+        $leave->update([
+            'status' => 'approved',
+        ]);
+
+        return back()->with('status', 'Permintaan pembatalan ditolak. Status kembali Approved.');
     }
 
     public function approve(Request $request, LeaveRequest $leave)

@@ -53,10 +53,16 @@
                             @elseif($l->status === 'cancellation_requested')
                                 <div class="flex flex-col gap-2">
                                     <span class="text-xs text-orange-600 font-medium">Request Batal</span>
-                                    <form method="POST" action="{{ route('admin.leave.approve_cancellation', $l) }}">
-                                        @csrf
-                                        <button class="px-3 py-1.5 rounded-xl bg-orange-600 text-white text-xs hover:bg-orange-700 transition shadow-sm font-medium">Setujui Batal</button>
-                                    </form>
+                                    <div class="flex gap-2">
+                                        <form method="POST" action="{{ route('admin.leave.approve_cancellation', $l) }}">
+                                            @csrf
+                                            <button class="px-3 py-1.5 rounded-xl bg-orange-600 text-white text-xs hover:bg-orange-700 transition shadow-sm font-medium">Setujui</button>
+                                        </form>
+                                        <form method="POST" action="{{ route('admin.leave.reject_cancellation', $l) }}">
+                                            @csrf
+                                            <button class="px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition font-medium text-xs">Tolak</button>
+                                        </form>
+                                    </div>
                                 </div>
                             @else
                                 <div class="text-xs text-gray-500">

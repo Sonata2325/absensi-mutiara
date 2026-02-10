@@ -34,7 +34,7 @@ class AdminDashboardController extends Controller
             ->count();
 
         $pendingLeaves = LeaveRequest::query()
-            ->where('status', 'pending')
+            ->whereIn('status', ['pending', 'cancellation_requested'])
             ->count();
 
         $leaveToday = LeaveRequest::query()
@@ -139,7 +139,7 @@ class AdminDashboardController extends Controller
             ->count();
 
         $pendingLeaves = LeaveRequest::query()
-            ->where('status', 'pending')
+            ->whereIn('status', ['pending', 'cancellation_requested'])
             ->count();
 
         return response()->json([
