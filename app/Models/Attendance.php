@@ -20,6 +20,7 @@ class Attendance extends Model
         'foto_keluar',
         'status',
         'keterangan',
+        'notes',
     ];
 
     protected $casts = [

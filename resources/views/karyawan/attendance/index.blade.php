@@ -1,37 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto space-y-8">
+<div class="max-w-md mx-auto space-y-5">
     <!-- Header Section -->
-    <div class="text-center pt-4">
-        <h1 id="live-clock" class="text-4xl font-bold text-black tracking-tight mb-2">{{ now()->format('H:i:s') }}</h1>
-        <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            <span class="text-sm font-medium text-black">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
+    <div class="text-center pt-2">
+        <h1 id="live-clock" class="text-4xl font-bold text-black tracking-tight mb-1">{{ now()->format('H:i:s') }}</h1>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <span class="text-xs font-medium text-black">{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
         </div>
     </div>
 
     <!-- Attendance Stats -->
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-3">
         <!-- Jam Masuk -->
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-[1.02]">
-            <div class="p-3 bg-red-50 rounded-full text-black">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-2 transition-transform hover:scale-[1.02]">
+            <div class="p-2.5 bg-red-50 rounded-full text-black">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
             </div>
             <div class="text-center">
-                <span class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Jam Masuk</span>
-                <span class="block text-xl font-bold text-gray-800">{{ $attendance?->jam_masuk ?? '--:--:--' }}</span>
+                <span class="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Jam Masuk</span>
+                <span class="block text-lg font-bold text-gray-800">{{ $attendance?->jam_masuk ?? '--:--:--' }}</span>
             </div>
         </div>
 
         <!-- Jam Keluar -->
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-[1.02]">
-            <div class="p-3 bg-red-50 rounded-full text-black">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-2 transition-transform hover:scale-[1.02]">
+            <div class="p-2.5 bg-red-50 rounded-full text-black">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
             </div>
             <div class="text-center">
-                <span class="block text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Jam Keluar</span>
-                <span class="block text-xl font-bold text-gray-800">{{ $attendance?->jam_keluar ?? '--:--:--' }}</span>
+                <span class="block text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Jam Keluar</span>
+                <span class="block text-lg font-bold text-gray-800">{{ $attendance?->jam_keluar ?? '--:--:--' }}</span>
             </div>
         </div>
     </div>
@@ -40,65 +40,96 @@
     <div class="relative">
         @if($leaveToday)
             <!-- State: Sedang Cuti/Izin -->
-            <div class="bg-orange-50 border border-orange-100 rounded-3xl p-8 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4 text-orange-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <div class="bg-orange-50 border border-orange-100 rounded-3xl p-6 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mb-3 text-orange-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-800">Sedang {{ ucfirst(str_replace('_', ' ', $leaveToday->tipe)) }}</h2>
-                <p class="text-gray-500 mt-2 text-sm">Anda sedang dalam masa {{ str_replace('_', ' ', $leaveToday->tipe) }} hari ini.</p>
+                <h2 class="text-lg font-bold text-gray-800">Sedang {{ ucfirst(str_replace('_', ' ', $leaveToday->tipe)) }}</h2>
+                <p class="text-gray-500 mt-1 text-xs">Anda sedang dalam masa {{ str_replace('_', ' ', $leaveToday->tipe) }} hari ini.</p>
             </div>
         
         @elseif(!$attendance)
             <!-- State: Belum Absen -->
-            <button onclick="openCamera('in')" class="group w-full relative overflow-hidden bg-black rounded-3xl p-8 shadow-lg shadow-red-200 transition-all hover:shadow-xl hover:scale-[1.01] active:scale-95">
+            <button onclick="openCamera('in')" class="group w-full relative overflow-hidden bg-black rounded-3xl p-6 shadow-lg shadow-red-200 transition-all hover:shadow-xl hover:scale-[1.01] active:scale-95">
                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-black/10 rounded-full blur-3xl"></div>
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-black/10 rounded-full blur-2xl"></div>
                 
-                <div class="relative z-10 flex flex-col items-center gap-4 text-white">
-                    <div class="p-4 bg-white/20 rounded-2xl backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+                <div class="relative z-10 flex flex-col items-center gap-3 text-white">
+                    <div class="p-3 bg-white/20 rounded-2xl backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
                     </div>
                     <div class="text-center">
-                        <h3 class="text-2xl font-bold tracking-tight">CLOCK IN</h3>
-                        <p class="text-red-100 text-sm mt-1">Absen Masuk</p>
+                        <h3 class="text-xl font-bold tracking-tight">CLOCK IN</h3>
+                        <p class="text-red-100 text-xs mt-0.5">Absen Masuk</p>
                     </div>
                 </div>
             </button>
 
         @elseif($attendance->jam_masuk && !$attendance->jam_keluar)
             <!-- State: Sudah Absen Masuk, Belum Keluar -->
-            <button onclick="openCamera('out')" class="group w-full relative overflow-hidden bg-white border-2 border-black rounded-3xl p-8 shadow-sm transition-all hover:shadow-md hover:bg-red-50 active:scale-95">
-                <div class="relative z-10 flex flex-col items-center gap-4">
-                    <div class="p-4 bg-red-100 rounded-2xl text-black group-hover:scale-110 transition-transform duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            <button onclick="openCamera('out')" class="group w-full relative overflow-hidden bg-white border-2 border-black rounded-3xl p-6 shadow-sm transition-all hover:shadow-md hover:bg-red-50 active:scale-95">
+                <div class="relative z-10 flex flex-col items-center gap-3">
+                    <div class="p-3 bg-red-100 rounded-2xl text-black group-hover:scale-110 transition-transform duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </div>
                     <div class="text-center">
-                        <h3 class="text-2xl font-bold text-black tracking-tight">CLOCK OUT</h3>
-                        <p class="text-gray-500 text-sm mt-1">Absen Pulang</p>
+                        <h3 class="text-xl font-bold text-black tracking-tight">CLOCK OUT</h3>
+                        <p class="text-gray-500 text-xs mt-0.5">Absen Pulang</p>
                     </div>
                 </div>
             </button>
 
         @else
             <!-- State: Sudah Selesai -->
-            <div class="bg-gray-50 border border-gray-100 rounded-3xl p-8 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-white shadow-sm rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <div class="bg-gray-50 border border-gray-100 rounded-3xl p-6 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-white shadow-sm rounded-full mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-800">Selesai</h2>
-                <p class="text-gray-500 mt-2 text-sm">Terima kasih atas kerja keras Anda hari ini!</p>
+                <h2 class="text-lg font-bold text-gray-800">Selesai</h2>
+                <p class="text-gray-500 mt-1 text-xs">Terima kasih atas kerja keras Anda hari ini!</p>
             </div>
         @endif
     </div>
 
+    <!-- Notes Section -->
+    @if($attendance && $attendance->jam_masuk)
+    <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Notes</h3>
+        </div>
+        
+        <form action="{{ route('karyawan.attendance.notes.update') }}" method="POST" id="form-notes">
+            @csrf
+            <div class="relative">
+                <textarea 
+                    name="notes" 
+                    id="input-notes" 
+                    rows="3" 
+                    class="w-full bg-gray-50 border-gray-200 text-gray-800 text-sm rounded-xl focus:ring-[#D61600] focus:border-[#D61600] block p-3.5 transition-colors resize-none disabled:opacity-60 disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    placeholder="Tulis catatan harian Anda di sini..."
+                >{{ $attendance->notes }}</textarea>
+            </div>
+
+            <div id="action-buttons-notes" class="hidden flex items-center justify-between gap-3 mt-3">
+                <button type="button" onclick="cancelEditNotes()" class="flex-1 py-2.5 px-4 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-colors text-xs uppercase tracking-wide">
+                    Batalkan
+                </button>
+                <button type="submit" class="flex-1 py-2.5 px-4 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-colors shadow-lg shadow-green-100 text-xs uppercase tracking-wide">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+    @endif
+
     @if(!$leaveToday)
     <div class="w-full">
-        <button type="button" onclick="openOvertimeModal()" class="w-full bg-[#D61600] text-white font-bold py-4 rounded-3xl shadow-lg shadow-red-200 hover:shadow-xl hover:bg-[#b01200] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button type="button" onclick="openOvertimeModal()" class="w-full bg-[#D61600] text-white font-bold py-3.5 rounded-3xl shadow-lg shadow-red-200 hover:shadow-xl hover:bg-[#b01200] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>Overtime</span>
+            <span class="text-sm">Overtime</span>
         </button>
     </div>
     @endif
@@ -211,6 +242,25 @@
     }
     setInterval(updateClock, 1000);
     updateClock(); // Initial call
+
+    // Notes Functionality
+    const originalNotes = @json($attendance->notes ?? '');
+
+    // Auto show buttons on input
+    const notesInput = document.getElementById('input-notes');
+    if (notesInput) {
+        notesInput.addEventListener('input', function() {
+            document.getElementById('action-buttons-notes').classList.remove('hidden');
+        });
+    }
+
+    function cancelEditNotes() {
+        const input = document.getElementById('input-notes');
+        const buttons = document.getElementById('action-buttons-notes');
+        
+        input.value = originalNotes; // Reset value
+        buttons.classList.add('hidden');
+    }
 
     let currentStream = null;
     let facingMode = 'user';

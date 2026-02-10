@@ -26,7 +26,7 @@
                     <tr class="hover:bg-gray-50/50 transition duration-150">
                         <td class="px-6 py-4 font-medium text-gray-900">{{ $l->employee?->name }}</td>
                         <td class="px-6 py-4 text-gray-600">{{ ucwords(str_replace('_', ' ', $l->tipe)) }}</td>
-                        <td class="px-6 py-4 text-gray-600">{{ $l->tanggal_mulai?->toDateString() }} - {{ $l->tanggal_selesai?->toDateString() }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ $l->tanggal_mulai?->format('d-m-Y') }} - {{ $l->tanggal_selesai?->format('d-m-Y') }}</td>
                         <td class="px-6 py-4 text-gray-600">{{ $l->alasan }}</td>
                         <td class="px-6 py-4">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold

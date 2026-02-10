@@ -40,6 +40,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin', 'request.log'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/stats', [AdminDashboardController::class, 'stats'])->name('dashboard.stats');
 
     Route::resource('positions', AdminPositionController::class)->parameters(['positions' => 'position']);
     Route::resource('shifts', AdminShiftController::class)->parameters(['shifts' => 'shift']);
@@ -80,6 +81,7 @@ Route::prefix('karyawan')->name('karyawan.')->middleware(['auth', 'role:employee
     Route::post('/absensi/clock-in', [KaryawanAttendanceController::class, 'clockIn'])->name('attendance.clock_in');
     Route::post('/absensi/clock-out', [KaryawanAttendanceController::class, 'clockOut'])->name('attendance.clock_out');
     Route::post('/absensi/overtime/start', [KaryawanAttendanceController::class, 'overtimeStart'])->name('attendance.overtime.start');
+    Route::post('/absensi/notes', [KaryawanAttendanceController::class, 'updateNotes'])->name('attendance.notes.update');
     Route::get('/absensi/riwayat', [KaryawanAttendanceController::class, 'history'])->name('attendance.history');
     Route::get('/absensi/slip.csv', [KaryawanAttendanceController::class, 'slipCsv'])->name('attendance.slip.csv');
 

@@ -217,7 +217,7 @@
 
     <main class="{{ request()->routeIs('login') ? 'w-full' : 'max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-10' }}">
         @if (session('status'))
-            <div class="mb-6 bg-red-50 border border-red-200 text-red-800 rounded-xl p-4 flex items-center gap-3">
+            <div class="mb-6 bg-gray-900 border border-gray-800 text-white rounded-xl p-4 flex items-center gap-3 shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 {{ session('status') }}
             </div>

@@ -245,6 +245,31 @@ class KaryawanAttendanceController extends Controller
         return back()->with('status', 'Over time dimulai.');
     }
 
+    public function updateNotes(Request $request)
+    {
+        $user = $request->user();
+        $today = now()->toDateString();
+
+        $attendance = Attendance::query()
+            ->where('employee_id', $user->id)
+            ->whereDate('tanggal', $today)
+            ->first();
+
+        if (! $attendance || ! $attendance->jam_masuk) {
+            return back()->with('status', 'Hanya bisa mengisi notes setelah clock in.');
+        }
+
+        $request->validate([
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $attendance->update([
+            'notes' => $request->input('notes'),
+        ]);
+
+        return back()->with('status', 'Notes berhasil disimpan.');
+    }
+
     public function history(Request $request)
     {
         $user = $request->user();

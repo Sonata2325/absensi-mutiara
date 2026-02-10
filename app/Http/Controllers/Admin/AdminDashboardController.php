@@ -33,6 +33,10 @@ class AdminDashboardController extends Controller
             ->whereDate('tanggal_selesai', '>=', $today)
             ->count();
 
+        $pendingLeaves = LeaveRequest::query()
+            ->where('status', 'pending')
+            ->count();
+
         $leaveToday = LeaveRequest::query()
             ->where('status', 'approved')
             ->whereDate('tanggal_mulai', '<=', $today)
@@ -108,8 +112,41 @@ class AdminDashboardController extends Controller
             'hadirHariIni' => $hadirHariIni,
             'izinHariIni' => $izinHariIni,
             'terlambatHariIni' => $terlambatHariIni,
+            'pendingLeaves' => $pendingLeaves,
             'chart' => $chart,
             'leaveSummary' => $leaveSummary,
+        ]);
+    }
+
+    public function stats()
+    {
+        $today = now()->toDateString();
+
+        $hadirHariIni = Attendance::query()
+            ->whereDate('tanggal', $today)
+            ->whereIn('status', ['hadir', 'terlambat'])
+            ->count();
+
+        $terlambatHariIni = Attendance::query()
+            ->whereDate('tanggal', $today)
+            ->where('status', 'terlambat')
+            ->count();
+
+        $izinHariIni = LeaveRequest::query()
+            ->where('status', 'approved')
+            ->whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->count();
+
+        $pendingLeaves = LeaveRequest::query()
+            ->where('status', 'pending')
+            ->count();
+
+        return response()->json([
+            'hadirHariIni' => $hadirHariIni,
+            'terlambatHariIni' => $terlambatHariIni,
+            'izinHariIni' => $izinHariIni,
+            'pendingLeaves' => $pendingLeaves,
         ]);
     }
 }

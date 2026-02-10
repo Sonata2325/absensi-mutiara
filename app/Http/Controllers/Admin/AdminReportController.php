@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -26,12 +27,27 @@ class AdminReportController extends Controller
             ->orderBy('employee_id')
             ->get();
 
+        $leaves = LeaveRequest::query()
+            ->whereIn('status', ['approved', 'rejected', 'cancelled'])
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('tanggal_mulai', [$start, $end])
+                      ->orWhereBetween('tanggal_selesai', [$start, $end])
+                      ->orWhere(function ($q) use ($start, $end) {
+                          $q->where('tanggal_mulai', '<', $start)
+                            ->where('tanggal_selesai', '>', $end);
+                      });
+            })
+            ->with(['employee.position', 'approver'])
+            ->orderBy('tanggal_mulai')
+            ->get();
+
         return view('admin.reports.index', [
             'month' => $month,
             'year' => $year,
             'start' => $start,
             'end' => $end,
             'attendances' => $attendances,
+            'leaves' => $leaves,
         ]);
     }
 
@@ -104,25 +120,13 @@ class AdminReportController extends Controller
                         <th>Status</th>
                         <th>Overtime</th>
                         <th>Deskripsi</th>
-                        <th>Tipe Izin</th>
                     </tr>
                 </thead>
                 <tbody>';
 
         foreach ($rows as $row) {
-            $leaveType = '-';
             $status = strtolower($row->status ?? '');
             $isOvertime = $status === 'overtime' ? 'Ya' : '-';
-
-            if (in_array($status, ['izin', 'cuti', 'sakit']) && $row->employee && $row->employee->leaveRequests) {
-                $attendanceDate = Carbon::parse($row->tanggal);
-                $leave = $row->employee->leaveRequests->first(function ($lr) use ($attendanceDate) {
-                    return $attendanceDate->between(Carbon::parse($lr->tanggal_mulai), Carbon::parse($lr->tanggal_selesai));
-                });
-                if ($leave) {
-                    $leaveType = ucwords(str_replace('_', ' ', $leave->tipe));
-                }
-            }
 
             $html .= '<tr>'
                 . '<td>' . htmlspecialchars((string) $row->tanggal?->toDateString()) . '</td>'
@@ -134,8 +138,56 @@ class AdminReportController extends Controller
                 . '<td>' . htmlspecialchars((string) ($row->status ?? '')) . '</td>'
                 . '<td>' . htmlspecialchars($isOvertime) . '</td>'
                 . '<td>' . htmlspecialchars((string) ($row->keterangan ?? '')) . '</td>'
-                . '<td>' . htmlspecialchars($leaveType) . '</td>'
                 . '</tr>';
+        }
+
+        $leaves = LeaveRequest::query()
+            ->whereIn('status', ['approved', 'rejected', 'cancelled'])
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('tanggal_mulai', [$start, $end])
+                      ->orWhereBetween('tanggal_selesai', [$start, $end])
+                      ->orWhere(function ($q) use ($start, $end) {
+                          $q->where('tanggal_mulai', '<', $start)
+                            ->where('tanggal_selesai', '>', $end);
+                      });
+            })
+            ->with(['employee.position', 'approver'])
+            ->orderBy('tanggal_mulai')
+            ->get();
+
+        if ($leaves->isNotEmpty()) {
+            $html .= '
+                </tbody>
+            </table>
+            
+            <div class="title" style="margin-top: 30px;">REKAPITULASI IZIN / CUTI</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Posisi</th>
+                        <th>Tipe</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Tanggal Selesai</th>
+                        <th>Alasan</th>
+                        <th>Status</th>
+                        <th>Disetujui Oleh</th>
+                    </tr>
+                </thead>
+                <tbody>';
+
+            foreach ($leaves as $leave) {
+                $html .= '<tr>'
+                    . '<td>' . htmlspecialchars((string) ($leave->employee?->name ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($leave->employee?->position?->nama_posisi ?? '')) . '</td>'
+                    . '<td>' . htmlspecialchars(ucwords(str_replace('_', ' ', $leave->tipe))) . '</td>'
+                    . '<td>' . htmlspecialchars($leave->tanggal_mulai?->format('d-m-Y')) . '</td>'
+                    . '<td>' . htmlspecialchars($leave->tanggal_selesai?->format('d-m-Y')) . '</td>'
+                    . '<td>' . htmlspecialchars($leave->alasan) . '</td>'
+                    . '<td>' . htmlspecialchars(ucfirst($leave->status)) . '</td>'
+                    . '<td>' . htmlspecialchars((string) ($leave->approver?->name ?? '-')) . '</td>'
+                    . '</tr>';
+            }
         }
 
         $html .= '
@@ -167,12 +219,27 @@ class AdminReportController extends Controller
             ->orderBy('employee_id')
             ->get();
 
+        $leaves = LeaveRequest::query()
+            ->whereIn('status', ['approved', 'rejected', 'cancelled'])
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('tanggal_mulai', [$start, $end])
+                      ->orWhereBetween('tanggal_selesai', [$start, $end])
+                      ->orWhere(function ($q) use ($start, $end) {
+                          $q->where('tanggal_mulai', '<', $start)
+                            ->where('tanggal_selesai', '>', $end);
+                      });
+            })
+            ->with(['employee.position', 'approver'])
+            ->orderBy('tanggal_mulai')
+            ->get();
+
         return view('admin.reports.pdf', [
             'month' => $month,
             'year' => $year,
             'start' => $start,
             'end' => $end,
             'attendances' => $attendances,
+            'leaves' => $leaves,
         ]);
     }
 }

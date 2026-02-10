@@ -7,7 +7,7 @@
         <p class="text-gray-500 mt-1 text-sm">Rekap data kehadiran per periode</p>
     </div>
     <div class="flex gap-2">
-        <a class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition" href="{{ route('admin.reports.attendance.csv', ['month' => $month, 'year' => $year]) }}">Export Excel (CSV)</a>
+        <a class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition" href="{{ route('admin.reports.attendance.csv', ['month' => $month, 'year' => $year]) }}">Export Excel</a>
         <a class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition" href="{{ route('admin.reports.attendance.pdf', ['month' => $month, 'year' => $year]) }}" target="_blank">Export PDF</a>
     </div>
 </div>
@@ -75,6 +75,56 @@
                 @empty
                     <tr>
                         <td class="px-6 py-8 text-center text-gray-500" colspan="9">Belum ada data absensi untuk periode ini.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-8 mb-6">
+    <h2 class="text-xl font-semibold text-gray-900 tracking-tight">Laporan Izin</h2>
+    <p class="text-gray-500 mt-1 text-sm">Rekap data izin karyawan (Disetujui/Ditolak/Dibatalkan)</p>
+</div>
+
+<div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-50/50 text-left text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                <tr>
+                    <th class="px-6 py-4 font-medium">Nama</th>
+                    <th class="px-6 py-4 font-medium">Posisi</th>
+                    <th class="px-6 py-4 font-medium">Tipe</th>
+                    <th class="px-6 py-4 font-medium">Tanggal Mulai</th>
+                    <th class="px-6 py-4 font-medium">Tanggal Selesai</th>
+                    <th class="px-6 py-4 font-medium">Alasan</th>
+                    <th class="px-6 py-4 font-medium">Status</th>
+                    <th class="px-6 py-4 font-medium">Disetujui Oleh</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @forelse($leaves as $l)
+                    <tr class="hover:bg-gray-50/50 transition duration-150">
+                        <td class="px-6 py-4 font-medium text-gray-900">{{ $l->employee?->name }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ $l->employee?->position?->nama_posisi }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ ucwords(str_replace('_', ' ', $l->tipe)) }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ $l->tanggal_mulai?->format('d-m-Y') }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ $l->tanggal_selesai?->format('d-m-Y') }}</td>
+                        <td class="px-6 py-4 text-gray-600">{{ $l->alasan }}</td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
+                                {{ $l->status === 'approved' ? 'bg-green-50 text-green-700 ring-1 ring-green-200/50' : '' }}
+                                {{ $l->status === 'rejected' ? 'bg-red-50 text-red-700 ring-1 ring-red-200/50' : '' }}
+                                {{ $l->status === 'cancelled' ? 'bg-gray-50 text-gray-700 ring-1 ring-gray-200/50' : '' }}
+                            ">
+                                {{ ucfirst($l->status) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">{{ $l->approver?->name ?? '-' }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td class="px-6 py-8 text-center text-gray-500" colspan="8">Belum ada data izin untuk periode ini.</td>
                     </tr>
                 @endforelse
             </tbody>

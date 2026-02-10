@@ -9,7 +9,7 @@
 <body class="p-6">
     <div class="flex items-center justify-between mb-4">
         <h1 class="text-xl font-bold">Laporan Absensi</h1>
-        <button onclick="window.print()" class="px-3 py-2 rounded-lg border text-sm">Print / Save as PDF</button>
+        <button onclick="window.print()" class="px-3 py-2 rounded-lg border text-sm">Save as PDF</button>
     </div>
     <div class="text-sm text-gray-700 mb-4">Periode: {{ $start }} s/d {{ $end }}</div>
 
@@ -40,6 +40,38 @@
                         <td class="p-2">{{ $a->status }}</td>
                         <td class="p-2">{{ $a->status === 'overtime' ? 'Ya' : '-' }}</td>
                         <td class="p-2">{{ $a->keterangan ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="text-xl font-bold mt-8 mb-4">Laporan Izin</h2>
+    <div class="border rounded-xl overflow-hidden">
+        <table class="min-w-full text-xs">
+            <thead class="bg-gray-50 text-left">
+                <tr>
+                    <th class="p-2">Nama</th>
+                    <th class="p-2">Posisi</th>
+                    <th class="p-2">Tipe</th>
+                    <th class="p-2">Tanggal Mulai</th>
+                    <th class="p-2">Tanggal Selesai</th>
+                    <th class="p-2">Alasan</th>
+                    <th class="p-2">Status</th>
+                    <th class="p-2">Disetujui Oleh</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($leaves as $l)
+                    <tr class="border-t">
+                        <td class="p-2">{{ $l->employee?->name }}</td>
+                        <td class="p-2">{{ $l->employee?->position?->nama_posisi }}</td>
+                        <td class="p-2">{{ ucwords(str_replace('_', ' ', $l->tipe)) }}</td>
+                        <td class="p-2">{{ $l->tanggal_mulai?->format('d-m-Y') }}</td>
+                        <td class="p-2">{{ $l->tanggal_selesai?->format('d-m-Y') }}</td>
+                        <td class="p-2">{{ $l->alasan }}</td>
+                        <td class="p-2">{{ ucfirst($l->status) }}</td>
+                        <td class="p-2">{{ $l->approver?->name ?? '-' }}</td>
                     </tr>
                 @endforeach
             </tbody>

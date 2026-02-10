@@ -120,7 +120,7 @@
                 </div>
                 <div>
                     <div class="text-sm text-gray-500 font-medium">Hadir Hari Ini</div>
-                    <div class="text-2xl font-semibold text-gray-900 tracking-tight">{{ $hadirHariIni }}</div>
+                    <div class="text-2xl font-semibold text-gray-900 tracking-tight stats-hadir-hari-ini">{{ $hadirHariIni }}</div>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
                 </div>
                 <div>
                     <div class="text-sm text-gray-500 font-medium">Terlambat</div>
-                    <div class="text-2xl font-semibold text-gray-900 tracking-tight">{{ $terlambatHariIni }}</div>
+                    <div class="text-2xl font-semibold text-gray-900 tracking-tight stats-terlambat">{{ $terlambatHariIni }}</div>
                 </div>
             </div>
         </div>
@@ -144,7 +144,7 @@
                 </div>
                 <div>
                     <div class="text-sm text-gray-500 font-medium">Izin Menunggu</div>
-                    <div class="text-2xl font-semibold text-gray-900 tracking-tight">{{ $pendingLeaves ?? 0 }}</div>
+                    <div class="text-2xl font-semibold text-gray-900 tracking-tight stats-pending-leaves">{{ $pendingLeaves ?? 0 }}</div>
                 </div>
             </div>
         </div>
@@ -156,7 +156,7 @@
                 </div>
                 <div>
                     <div class="text-sm text-gray-500 font-medium">Izin / Cuti Hari Ini</div>
-                    <div class="text-2xl font-semibold text-gray-900 tracking-tight">{{ $izinHariIni }}</div>
+                    <div class="text-2xl font-semibold text-gray-900 tracking-tight stats-izin-hari-ini">{{ $izinHariIni }}</div>
                 </div>
             </div>
         </div>
@@ -228,6 +228,26 @@
 </div>
 </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function refreshStats() {
+            fetch('{{ route('admin.dashboard.stats') }}')
+                .then(response => response.json())
+                .then(data => {
+                    // Update stats
+                    document.querySelector('.stats-hadir-hari-ini').textContent = data.hadirHariIni;
+                    document.querySelector('.stats-terlambat').textContent = data.terlambatHariIni;
+                    document.querySelector('.stats-pending-leaves').textContent = data.pendingLeaves;
+                    document.querySelector('.stats-izin-hari-ini').textContent = data.izinHariIni;
+                })
+                .catch(error => console.error('Error refreshing stats:', error));
+        }
+
+        // Refresh every 10 seconds
+        setInterval(refreshStats, 10000);
+    });
+</script>
 
 <!-- Script to handle Skeleton Loader -->
 <script>
