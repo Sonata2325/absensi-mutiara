@@ -207,6 +207,14 @@ class KaryawanLeaveRequestController extends Controller
                 return back()->withErrors(['tanggal_mulai' => 'Anda sudah memiliki pengajuan izin/cuti pada rentang tanggal tersebut.'])->withInput();
             }
 
+            if ($request->tipe !== 'sakit') {
+                $startAt = (clone $start)->startOfDay();
+                $hoursUntilStart = now()->diffInHours($startAt, false);
+                if ($hoursUntilStart < 24) {
+                    return back()->withErrors(['tanggal_mulai' => 'Pengajuan izin/cuti harus minimal H-1 (24 jam) sebelum tanggal mulai.'])->withInput();
+                }
+            }
+
             // 1. Logika Sakit (3 hari per bulan)
             if ($request->tipe === 'sakit') {
                 // Jika > 2 hari, dokumen wajib

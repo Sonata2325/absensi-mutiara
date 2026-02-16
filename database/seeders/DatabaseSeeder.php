@@ -99,6 +99,7 @@ class DatabaseSeeder extends Seeder
                     'status' => 'aktif',
                 ]
             );
-        }
+            $this->call(UsersTableSeeder::class);
+    }
     }
 }

@@ -181,7 +181,7 @@
         <button onclick="closeCamera()" class="text-white p-2 hover:bg-white/10 rounded-full transition backdrop-blur-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
-        <div class="text-white font-bold text-lg tracking-wide" id="modal-title">Ambil Foto</div>
+        <div class="text-white font-bold text-lg tracking-wide" id="camera-modal-title">Ambil Foto</div>
         <button onclick="switchCamera()" class="text-white p-2 hover:bg-white/10 rounded-full transition backdrop-blur-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
         </button>
@@ -268,7 +268,7 @@
 
     function openCamera(type) {
         currentType = type;
-        document.getElementById('modal-title').innerText = type === 'in' ? 'Absen Masuk' : 'Absen Pulang';
+        document.getElementById('camera-modal-title').innerText = type === 'in' ? 'Absen Masuk' : 'Absen Pulang';
         document.getElementById('camera-modal').classList.remove('hidden');
         
         // Prepare form action and input name

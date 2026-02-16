@@ -291,7 +291,11 @@ class KaryawanAttendanceController extends Controller
             ->where('employee_id', $user->id)
             ->whereBetween('tanggal', [$start, $end])
             ->orderByDesc('tanggal')
-            ->paginate(20);
+            ->paginate(20)
+            ->appends([
+                'month' => $month,
+                'year' => $year,
+            ]);
 
         return view('karyawan.attendance.history', compact('attendances', 'month', 'year'));
     }
