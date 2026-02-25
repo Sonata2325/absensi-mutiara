@@ -7,19 +7,19 @@
         <p class="text-gray-500 mt-1 text-sm">Rekap data kehadiran per periode</p>
     </div>
     <div class="flex gap-2">
-        <a class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition" href="{{ route('admin.reports.attendance.csv', ['month' => $month, 'year' => $year]) }}">Export Excel</a>
-        <a class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition" href="{{ route('admin.reports.attendance.pdf', ['month' => $month, 'year' => $year]) }}" target="_blank">Export PDF</a>
+        <a class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition" href="{{ route('admin.reports.attendance.csv', ['start_date' => $start_date, 'end_date' => $end_date]) }}">Export Excel</a>
+        <a class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition" href="{{ route('admin.reports.attendance.pdf', ['start_date' => $start_date, 'end_date' => $end_date]) }}" target="_blank">Export PDF</a>
     </div>
 </div>
 
 <form method="GET" class="bg-white border border-gray-100 rounded-2xl p-6 mb-6 flex flex-wrap gap-4 items-end shadow-sm">
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">Bulan</label>
-        <input name="month" type="number" min="1" max="12" value="{{ $month }}" class="w-24 border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition">
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Tanggal Mulai</label>
+        <input name="start_date" type="date" value="{{ $start_date }}" class="w-44 border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition">
     </div>
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">Tahun</label>
-        <input name="year" type="number" min="2000" max="2100" value="{{ $year }}" class="w-28 border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition">
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Tanggal Selesai</label>
+        <input name="end_date" type="date" value="{{ $end_date }}" class="w-44 border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-gray-900/5 focus:border-gray-900 transition">
     </div>
     <button class="px-6 py-2 rounded-xl bg-gray-900 text-white text-sm font-medium shadow-sm hover:bg-gray-800 transition">Filter Data</button>
 </form>

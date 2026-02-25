@@ -12,13 +12,16 @@ class AdminReportController extends Controller
 {
     public function index(Request $request)
     {
-        $month = (int) $request->query('month', now()->month);
-        $year = (int) $request->query('year', now()->year);
-
-        $start = Carbon::create($year, $month, 1)->startOfMonth()->toDateString();
-        $end = Carbon::create($year, $month, 1)->endOfMonth()->toDateString();
-        $startDt = Carbon::create($year, $month, 1)->startOfMonth()->startOfDay()->toDateTimeString();
-        $endDt = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay()->toDateTimeString();
+        [
+            $startDate,
+            $endDate,
+            $start,
+            $end,
+            $startDt,
+            $endDt,
+            $startInput,
+            $endInput,
+        ] = $this->resolveRange($request);
 
         $attendances = Attendance::query()
             ->whereBetween('tanggal', [$startDt, $endDt])
@@ -42,8 +45,8 @@ class AdminReportController extends Controller
             ->get();
 
         return view('admin.reports.index', [
-            'month' => $month,
-            'year' => $year,
+            'start_date' => $startInput,
+            'end_date' => $endInput,
             'start' => $start,
             'end' => $end,
             'attendances' => $attendances,
@@ -53,13 +56,14 @@ class AdminReportController extends Controller
 
     public function attendanceCsv(Request $request)
     {
-        $month = (int) $request->query('month', now()->month);
-        $year = (int) $request->query('year', now()->year);
-
-        $start = Carbon::create($year, $month, 1)->startOfMonth()->toDateString();
-        $end = Carbon::create($year, $month, 1)->endOfMonth()->toDateString();
-        $startDt = Carbon::create($year, $month, 1)->startOfMonth()->startOfDay()->toDateTimeString();
-        $endDt = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay()->toDateTimeString();
+        [
+            $startDate,
+            $endDate,
+            $start,
+            $end,
+            $startDt,
+            $endDt,
+        ] = $this->resolveRange($request);
 
         $rows = Attendance::query()
             ->whereBetween('tanggal', [$startDt, $endDt])
@@ -68,8 +72,13 @@ class AdminReportController extends Controller
             ->orderBy('employee_id')
             ->get();
 
-        $filename = "laporan-absensi-{$year}-".str_pad((string) $month, 2, '0', STR_PAD_LEFT).'.xls';
-        $monthName = Carbon::createFromDate($year, $month, 1)->translatedFormat('F Y');
+        $periodLabel = $startDate->equalTo($endDate)
+            ? $startDate->translatedFormat('d F Y')
+            : $startDate->translatedFormat('d F Y').' - '.$endDate->translatedFormat('d F Y');
+        $filenameSuffix = $startDate->equalTo($endDate)
+            ? $startDate->format('Y-m-d')
+            : $startDate->format('Y-m-d').'-'.$endDate->format('Y-m-d');
+        $filename = "laporan-absensi-{$filenameSuffix}.xls";
 
         $html = '
         <html>
@@ -90,7 +99,7 @@ class AdminReportController extends Controller
             <table class="info-table">
                 <tr>
                     <td style="width: 150px; font-weight: bold;">Periode</td>
-                    <td>: ' . htmlspecialchars($monthName) . '</td>
+                    <td>: ' . htmlspecialchars($periodLabel) . '</td>
                 </tr>
                 <tr>
                     <td style="font-weight: bold;">Perusahaan</td>
@@ -193,13 +202,14 @@ class AdminReportController extends Controller
 
     public function attendancePdf(Request $request)
     {
-        $month = (int) $request->query('month', now()->month);
-        $year = (int) $request->query('year', now()->year);
-
-        $start = Carbon::create($year, $month, 1)->startOfMonth()->toDateString();
-        $end = Carbon::create($year, $month, 1)->endOfMonth()->toDateString();
-        $startDt = Carbon::create($year, $month, 1)->startOfMonth()->startOfDay()->toDateTimeString();
-        $endDt = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay()->toDateTimeString();
+        [
+            $startDate,
+            $endDate,
+            $start,
+            $end,
+            $startDt,
+            $endDt,
+        ] = $this->resolveRange($request);
 
         $attendances = Attendance::query()
             ->whereBetween('tanggal', [$startDt, $endDt])
@@ -223,12 +233,59 @@ class AdminReportController extends Controller
             ->get();
 
         return view('admin.reports.pdf', [
-            'month' => $month,
-            'year' => $year,
             'start' => $start,
             'end' => $end,
             'attendances' => $attendances,
             'leaves' => $leaves,
         ]);
+    }
+
+    private function resolveRange(Request $request): array
+    {
+        $startInput = $request->query('start_date');
+        $endInput = $request->query('end_date');
+
+        $startDate = $this->parseDate($startInput);
+        $endDate = $this->parseDate($endInput);
+
+        if (! $startDate && ! $endDate) {
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+        } elseif ($startDate && ! $endDate) {
+            $endDate = $startDate->copy();
+        } elseif (! $startDate && $endDate) {
+            $startDate = $endDate->copy();
+        }
+
+        if ($startDate->greaterThan($endDate)) {
+            [$startDate, $endDate] = [$endDate, $startDate];
+        }
+
+        $start = $startDate->toDateString();
+        $end = $endDate->toDateString();
+
+        return [
+            $startDate,
+            $endDate,
+            $start,
+            $end,
+            $startDate->copy()->startOfDay()->toDateTimeString(),
+            $endDate->copy()->endOfDay()->toDateTimeString(),
+            $startInput ?? $start,
+            $endInput ?? $end,
+        ];
+    }
+
+    private function parseDate(?string $value): ?Carbon
+    {
+        if (! $value) {
+            return null;
+        }
+
+        try {
+            return Carbon::createFromFormat('Y-m-d', $value);
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 }
