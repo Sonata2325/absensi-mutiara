@@ -38,6 +38,7 @@
                     <th class="px-6 py-4 font-medium">Status</th>
                     <th class="px-6 py-4 font-medium">Overtime</th>
                     <th class="px-6 py-4 font-medium">Deskripsi</th>
+                    <th class="px-6 py-4 font-medium">Notes</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
@@ -71,10 +72,13 @@
                         <td class="px-6 py-4 text-gray-600 max-w-xs truncate" title="{{ $a->keterangan ?? '' }}">
                             {{ $a->keterangan ?? '-' }}
                         </td>
+                        <td class="px-6 py-4 text-gray-600 max-w-xs truncate" title="{{ $a->notes ?? '' }}">
+                            {{ $a->notes ?? '-' }}
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td class="px-6 py-8 text-center text-gray-500" colspan="9">Belum ada data absensi untuk periode ini.</td>
+                        <td class="px-6 py-8 text-center text-gray-500" colspan="10">Belum ada data absensi untuk periode ini.</td>
                     </tr>
                 @endforelse
             </tbody>

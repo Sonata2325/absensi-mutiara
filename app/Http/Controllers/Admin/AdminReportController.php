@@ -118,6 +118,7 @@ class AdminReportController extends Controller
                         <th>Status</th>
                         <th>Overtime</th>
                         <th>Deskripsi</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>';
@@ -136,6 +137,7 @@ class AdminReportController extends Controller
                 . '<td>' . htmlspecialchars((string) ($row->status ?? '')) . '</td>'
                 . '<td>' . htmlspecialchars($isOvertime) . '</td>'
                 . '<td>' . htmlspecialchars((string) ($row->keterangan ?? '')) . '</td>'
+                . '<td>' . htmlspecialchars((string) ($row->notes ?? '')) . '</td>'
                 . '</tr>';
         }
 
